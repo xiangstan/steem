@@ -70,7 +70,8 @@ Vagrant.configure(2) do |config|
 
     echo "Linking working directory to web root"
     rm -R /var/www
-    ln -s /vagrant /var/www
+    mkdir /var/www/
+    ln -s /vagrant /var/www/public
 
     echo "Restarting NGINX"
     systemctl restart nginx.service
