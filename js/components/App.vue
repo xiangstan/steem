@@ -23,8 +23,8 @@
 <script>
 module.exports={
   components:{
-    "prof-box": window.httpVueLoader("/js/components/Account.vue"),
-    "notify-msg": window.httpVueLoader("/js/components/Notify.vue")
+    "prof-box": window.httpVueLoader("./js/components/Account.vue"),
+    "notify-msg": window.httpVueLoader("./js/components/Notify.vue")
   },
   data: function() {
     return {

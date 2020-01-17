@@ -3,7 +3,7 @@ Vue.config.devtools=true;
 const App=new window.Vue({
   el: "#app",
   components:{
-    "App": window.httpVueLoader("/js/components/App.vue")
+    "App": window.httpVueLoader("./js/components/App.vue")
   },
   template:"<App></App>"
 });
