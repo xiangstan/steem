@@ -14,6 +14,9 @@
       <div class="column is-one-third">
         <prof-box :profile="profile.main" :show="show.mainProfile" ref="profile"></prof-box>
       </div>
+      <div class="column">
+        <token-list :tokens="tokens.main"></token-list>
+      </div>
     </div>
   </div>
   <notify-msg :msg="msg"></notify-msg>
@@ -24,7 +27,8 @@
 module.exports={
   components:{
     "prof-box": window.httpVueLoader("./js/components/Account.vue"),
-    "notify-msg": window.httpVueLoader("./js/components/Notify.vue")
+    "notify-msg": window.httpVueLoader("./js/components/Notify.vue"),
+    "token-list": window.httpVueLoader("./js/components/Tokens.vue")
   },
   data: function() {
     return {
@@ -37,7 +41,11 @@ module.exports={
       show: {
         mainProfile: false
       },
+      ssc:new SSC("https://api.steem-engine.com/rpc/"),
       steem:steem,
+      tokens:{
+        main: false
+      },
       user: {
         main: ""
       }
@@ -55,16 +63,45 @@ module.exports={
       }, 3000)
     },
     init: function() {
+      const that = this;
       this.steem.api.setOptions({ url: "https://anyx.io" });
       const steemId = localStorage.getItem("steemId");
       if(steemId){
         this.user.main = steemId;
         this.searchSteemAccount(steemId, "main");
       }
+      this.GetTokens(steemId).then((result) => {
+        this.tokens.main = result;
+      });
+      setTimeout(function() { that.GetFollowers(steemId); }, 2000);
+    },
+    /* Get User Followers */
+    GetFollowers: function(steemId) {
+      const that = this;
+      that.steem.api.getFollowers([steemId], function(err, result) {
+        console.log(err, result);
+      });
+    },
+    /* Get user tokens */
+    GetTokens: function(steemId, limit=1000, offset=0) {
+      return new Promise((resolve, reject) => {
+        this.ssc.find(
+          'tokens',
+          'balances',
+          { account: steemId },
+          limit,
+          offset,
+          [],
+          (err, result) => {
+            resolve(result);
+          }
+        );
+      });
     },
     searchId: function(e) {
       const method = e.currentTarget.dataset.method;
       const steemId = this.user[method];
+      this.tokens[method] = false;
       this.searchSteemAccount(steemId, method);
     },
     /* search for a steem profile */
