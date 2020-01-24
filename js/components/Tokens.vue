@@ -5,7 +5,7 @@
       <a class="button-expand" @click="tokenExpand=!tokenExpand">[ <span>{{TokenExpandSign}}</span> ]</a>
     </div>
     <div class="message-body">
-      <div class="list show" :class="TokenExpandCss">
+      <div class="list">
         <div class="list-item has-background-info has-text-light">
           <div class="columns has-text-weight-bold is-uppercase">
             <div class="column is-one-quarter">
@@ -20,7 +20,7 @@
             </div>
           </div>
         </div>
-        <div class="list-item" v-for="tkn in AllTokens">
+        <div class="list-item" v-for="(tkn,idx) in AllTokens" v-if="idx<TokenExpandCount">
           <div class="columns">
             <div class="column is-one-quarter has-text-weight-semibold">
               <label class="checkbox">
@@ -34,7 +34,7 @@
           </div>
         </div><!-- End of All Tokens -->
         <div class="list-item has-background-light has-text-light">
-          <div class="field has-addons">
+          <div class="field has-addons" v-if="tokenExpand">
             <div class="control is-expanded">
               <input class="input" id="active-key" type="password" placeholder="Active Key">
             </div>
@@ -45,6 +45,9 @@
               </button>
             </div>
           </div>
+          <p class="notification is-warning" v-else>
+            Click [ + ] to View All Tokens and Sell Button
+          </p>
         </div>
       </div><!-- End of List -->
     </div><!-- End of Message Body -->
@@ -65,7 +68,12 @@ module.exports={
       return temp;
     },
     TokenExpandSign: function() { return (this.tokenExpand)?"-":"+"; },
-    TokenExpandCss: function() { return (this.tokenExpand)?"show-expand":""; }
+    TokenExpandCount: function() {
+      let count = 6;
+      if(this.AllTokens.length < 6 || this.tokenExpand){ count = this.AllTokens.length; }
+      return count;
+      //return this.AllTokens.length
+    }
   },
   data: function() {
     return {
@@ -132,14 +140,5 @@ module.exports={
   display: inline-block;
   text-align: center;
   width: 10px;
-}
-.show{
-  max-height: 490px;
-  overflow: hidden;
-  padding-bottom: 1.25rem;
-}
-.show.show-expand{
-  max-height: unset;
-  padding-bottom: 0;
 }
 </style>

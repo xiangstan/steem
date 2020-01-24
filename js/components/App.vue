@@ -79,13 +79,6 @@ module.exports={
       //this.searchToken(steemId, "main");
       setTimeout(function() { that.GetFollowers(steemId); }, 2000);
     },
-    /* Get User Followers */
-    GetFollowers: function(steemId) {
-      const that = this;
-      that.steem.api.getFollowers([steemId], function(err, result) {
-        console.log(err, result);
-      });
-    },
     /* Get user tokens */
     GetTokens: function(steemId, limit=1000, offset=0) {
       return new Promise((resolve, reject) => {
