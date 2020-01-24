@@ -2,12 +2,18 @@
 <div class="container">
   <div class="content">
     <h1 class="has-text-centered is-size-3">STEEM Info Center</h1>
-    <div class="field has-addons">
-      <div class="control">
-        <input class="input" placeholder="Provide a STEEM ID" v-model="user.main" />
-      </div>
-      <div class="control">
-        <a class="button is-info" data-method="main" @click="searchId">Search</a>
+    <div class="columns">
+      <div class="column is-half">
+        <div class="field has-addons">
+          <div class="control is-expanded">
+            <input class="input" placeholder="Provide a STEEM ID" v-model="user.main" />
+          </div>
+          <div class="control">
+            <a class="button is-info" data-method="main" @click="searchId">
+              <i aria-hidden="true" class="fas fa-search fa-fw"></i> Search
+            </a>
+          </div>
+        </div>
       </div>
     </div>
     <div class="columns">
@@ -60,7 +66,7 @@ module.exports={
         that.msg = {
           alert: false
         };
-      }, 3000)
+      }, 4000)
     },
     init: function() {
       const that = this;
@@ -70,9 +76,7 @@ module.exports={
         this.user.main = steemId;
         this.searchSteemAccount(steemId, "main");
       }
-      this.GetTokens(steemId).then((result) => {
-        this.tokens.main = result;
-      });
+      //this.searchToken(steemId, "main");
       setTimeout(function() { that.GetFollowers(steemId); }, 2000);
     },
     /* Get User Followers */
@@ -121,7 +125,7 @@ module.exports={
             that.profile[method] = result[0];
             that.show[method+"Profile"] = true;
           }
-          else{ 
+          else{
             that.msg = {
               alert: true,
               code: false,
@@ -129,7 +133,15 @@ module.exports={
             }
           }
         });
+        that.searchToken(steemId, "main");
       }
+    },
+    /* search tokens */
+    searchToken: function(steemId, method) {
+      const that = this;
+      that.GetTokens(steemId).then((result) => {
+        that.tokens[method] = result;
+      });
     }
   },
   mounted: function() {

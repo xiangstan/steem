@@ -1,7 +1,17 @@
 Vue.config.devtools=true;
 
+const store = new Vuex.Store({
+  state: {
+    main: {
+      profile: {},
+      tokens: {}
+    }
+  }
+});
+
 const App=new window.Vue({
   el: "#app",
+  store,
   components:{
     "App": window.httpVueLoader("./js/components/App.vue")
   },
