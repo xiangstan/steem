@@ -3,10 +3,16 @@ Vue.config.devtools=true;
 const store = new Vuex.Store({
   state: {
     main: {
+      steemId: false,
       profile: {},
       tokens: {}
     }
-  }
+  },
+  mutations: {
+    updateMainSteemId(state, value){
+      state.main.steemId = value;
+    }
+  },
 });
 
 const App=new window.Vue({

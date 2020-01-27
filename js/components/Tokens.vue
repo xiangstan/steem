@@ -1,10 +1,10 @@
 <template>
-  <div class="message is-info" v-if="tokens.length>0">
+  <div class="message is-info">
     <div class="message-header">
       Token Wallet
       <a class="button-expand" @click="tokenExpand=!tokenExpand">[ <span>{{TokenExpandSign}}</span> ]</a>
     </div>
-    <div class="message-body">
+    <div class="message-body" v-if="tokens.length>0">
       <div class="list">
         <div class="list-item has-background-info has-text-light">
           <div class="columns has-text-weight-bold is-uppercase">
@@ -16,7 +16,7 @@
 
             </div>
             <div class="column">
-              Blance (Stake)
+              Balance (Stake)
             </div>
           </div>
         </div>
@@ -72,7 +72,6 @@ module.exports={
       let count = 6;
       if(this.AllTokens.length < 6 || this.tokenExpand){ count = this.AllTokens.length; }
       return count;
-      //return this.AllTokens.length
     }
   },
   data: function() {
@@ -90,7 +89,6 @@ module.exports={
           let content = this.AllTokens[i];
           if(content.balance > 0) {
             this.form.push(this.SetValue(content));
-            console.log(this.form);
           }
         }
       }

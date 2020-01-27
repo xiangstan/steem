@@ -53,12 +53,14 @@
         <div class="card-content">
           <div class="content">
             <p><strong>Steem:</strong> {{profile.balance}}</p>
+            <!-- <p><strong>Steem Power:</strong> {{profile.balance}}</p> -->
             <p><strong>Steem Dollars:</strong> {{profile.sbd_balance}}</p>
             <p><strong>Savings:</strong> {{profile.savings_balance}}</p>
           </div>
         </div>
       </div>
       <!-- End -->
+      <!-- {{profile}} -->
     </div>
     <p class="notification is-danger" v-else>Provided account does not exist</p>
   </div>

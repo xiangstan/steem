@@ -22,6 +22,7 @@
       </div>
       <div class="column">
         <token-list :tokens="tokens.main"></token-list>
+        <un-claimed></un-claimed>
       </div>
     </div>
   </div>
@@ -34,7 +35,8 @@ module.exports={
   components:{
     "prof-box": window.httpVueLoader("./js/components/Account.vue"),
     "notify-msg": window.httpVueLoader("./js/components/Notify.vue"),
-    "token-list": window.httpVueLoader("./js/components/Tokens.vue")
+    "token-list": window.httpVueLoader("./js/components/Tokens.vue"),
+    "un-claimed": window.httpVueLoader("./js/components/Unclaimed.vue")
   },
   data: function() {
     return {
@@ -47,9 +49,10 @@ module.exports={
       show: {
         mainProfile: false
       },
-      ssc:new SSC("https://api.steem-engine.com/rpc/"),
-      steem:steem,
-      tokens:{
+      ssc: new SSC("https://api.steem-engine.com/rpc/"),
+      steem: steem,
+      unclaimed: {},
+      tokens: {
         main: false
       },
       user: {
@@ -68,24 +71,34 @@ module.exports={
         };
       }, 4000)
     },
+    /*ApiCall: function(api, method) {
+      return new Promise((resolve, reject) =>{
+        this.client.call(api, method [])
+      });
+    },*/
     init: function() {
       const that = this;
       this.steem.api.setOptions({ url: "https://anyx.io" });
       const steemId = localStorage.getItem("steemId");
       if(steemId){
         this.user.main = steemId;
+        this.$store.commit("updateMainSteemId", steemId);
         this.searchSteemAccount(steemId, "main");
       }
-      //this.searchToken(steemId, "main");
-      setTimeout(function() { that.GetFollowers(steemId); }, 2000);
     },
-    /* Get user tokens */
-    GetTokens: function(steemId, limit=1000, offset=0) {
+    searchId: function(e) {
+      const method = e.currentTarget.dataset.method;
+      const steemId = this.user[method];
+      this.tokens[method] = false;
+      this.searchSteemAccount(steemId, method);
+    },
+    /* Steem Engine Query */
+    SscQuery: function(steemId, contract, table, query, limit=1000, offset=0) {
       return new Promise((resolve, reject) => {
         this.ssc.find(
-          'tokens',
-          'balances',
-          { account: steemId },
+          contract,
+          table,
+          query,
           limit,
           offset,
           [],
@@ -94,12 +107,6 @@ module.exports={
           }
         );
       });
-    },
-    searchId: function(e) {
-      const method = e.currentTarget.dataset.method;
-      const steemId = this.user[method];
-      this.tokens[method] = false;
-      this.searchSteemAccount(steemId, method);
     },
     /* search for a steem profile */
     searchSteemAccount: function(steemId, method) {
@@ -132,7 +139,7 @@ module.exports={
     /* search tokens */
     searchToken: function(steemId, method) {
       const that = this;
-      that.GetTokens(steemId).then((result) => {
+      that.SscQuery(steemId, "tokens", "balances", { account: steemId }).then((result) => {
         that.tokens[method] = result;
       });
     }
