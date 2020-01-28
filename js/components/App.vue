@@ -22,7 +22,7 @@
       </div>
       <div class="column">
         <token-list :tokens="tokens.main"></token-list>
-        <un-claimed></un-claimed>
+        <un-claimed :steem="steem"></un-claimed>
       </div>
     </div>
   </div>
