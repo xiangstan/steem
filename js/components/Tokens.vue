@@ -98,18 +98,18 @@ module.exports={
     Sell: function() {
       const activekey = document.getElementById("active-key").value;
       if(activekey.length === 0) {
-        this.$parent.msg = {
+        this.$parent.alert({
           alert: true,
           code: false,
           text: "Need to provide STEEM Active Key"
-        };
+        });
       }
       else if(this.form.length === 0){
-        this.$parent.msg = {
+        this.$parent.alert({
           alert: true,
           code: false,
           text: "Need to select at least one token"
-        };
+        });
       }
       else {}
     },

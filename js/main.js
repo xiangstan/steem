@@ -6,6 +6,11 @@ const store = new Vuex.Store({
       steemId: false,
       profile: {},
       tokens: {}
+    },
+    msg: {
+      alert: false,
+      code: false,
+      text: ""
     }
   },
   mutations: {
@@ -14,6 +19,8 @@ const store = new Vuex.Store({
     }
   },
 });
+
+window.Vue.use(Toasted);
 
 const App=new window.Vue({
   el: "#app",

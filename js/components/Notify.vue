@@ -12,7 +12,7 @@ module.exports={
       cssClass=(this.msg.alert)?"active":"";
       cssClass+=(this.msg.code)?" has-background-success":" has-background-danger";
       return cssClass;
-    }
+    },
   },
   data(){
     return {
