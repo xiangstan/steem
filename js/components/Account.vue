@@ -11,7 +11,12 @@
               </figure>
             </div>
             <div class="media-content">
-              <p class="title is-4">{{metadata.name}}</p>
+              <p class="title is-4">
+                {{metadata.name}}
+                <span class="likr" v-if="likr">
+                  <img src="/images/clap.png" />
+                </span>
+              </p>
               <p class="subtitle is-6 is-italic">@{{profile.name}}</p>
               <p class="" v-if="metadata.location">
                 <i class="fas fa-map-marker-alt fa-fw"></i> {{metadata.location}}
@@ -69,6 +74,15 @@
 <script>
 module.exports={
   computed: {
+    likr: function() {
+      const location = this.metadata.location;
+      if(typeof location !=="undefined" && location !== "") {
+        const loc = this.metadata.location.split(":");
+        if( loc[0] === "likerid" ) { return loc[1]; }
+        else { return false; }
+      }
+      else { return false; }
+    },
     metadata: function() {
       const temp = JSON.parse(this.profile.json_metadata)
       return temp.profile;
@@ -110,6 +124,8 @@ module.exports={
   border-radius: 50%;
   border:5px solid #fff;
   box-shadow: 0px 0px 6px #444;
+  height: 100%;
+  width: 100%;
 }
 .icon-facebook{
   color:#3b5998;
@@ -122,6 +138,27 @@ module.exports={
 }
 .icon-website{
   color:#ea4335;
+}
+.likr {
+  background-color: #28646e;
+  -webkit-border: 3px solid #50e3c2;
+  -moz-border: 3px solid #50e3c2;
+  border: 3px solid #50e3c2;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  border-radius: 50%;
+  display: inline-block;
+  height: 32px;
+  padding: 0.374rem;
+  position: relative;
+  vertical-align: middle;
+  width: 32px;
+}
+.likr img {
+  display: block;
+  margin: auto;
+  padding-top: 2px;
+  width: 90%;
 }
 .social-media span{
   display:block;
