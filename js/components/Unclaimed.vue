@@ -1,10 +1,10 @@
 <template>
   <div class="list">
     <div class="list-item has-background-info has-text-weight-bold has-text-white">
-      Unclaimed Tokens <span v-if="tokenExpand">(<em>{{tkns.length}}</em>)</span>
+      Unclaimed Tokens <span v-if="TokenExpand">(<em>{{tkns.length}}</em>)</span>
       <a class="button-expand is-pulled-right" @click="fetchUnclaimed">[ <span>{{TokenExpandSign}}</span> ]</a>
     </div>
-    <div class="list-item" v-for="tkn in tkns" v-if="tokenExpand">
+    <div class="list-item" v-for="tkn in tkns" v-if="TokenExpand">
       <p class="notification is-warning" v-if="tkns.length===0">
         No more unclaimed tokens
       </p>
@@ -36,13 +36,13 @@
 <script>
 module.exports={
   computed: {
-    TokenExpandSign: function() { return (this.tokenExpand) ? "-" : "+"; },
-    SteemId: function() { return this.$store.state.main.steemId; }
+    SteemId: function() { return this.$store.state.main.steemId; },
+    TokenExpandSign: function() { return (this.TokenExpand) ? "-" : "+"; },
+    TokenExpand: function() { return this.$store.state.main.tokenExpand; }
   },
   data: function() {
     return {
-      tkns: [],
-      tokenExpand: false
+      tkns: []
     }
   },
   methods: {
@@ -50,9 +50,10 @@ module.exports={
     fetchUnclaimed: function(e) {
       e.preventDefault();
       const that = this;
-      that.tokenExpand=!that.tokenExpand;
+      that.$store.commit("updMainUnclaimed", !that.TokenExpand);
       that.tkns = [];
-      if(this.tokenExpand && that.SteemId !== false){
+      if(this.TokenExpand && that.SteemId !== false){
+        that.$store.commit("setLoading", true);
         axios.get("https://scot-api.steem-engine.com/@" + that.SteemId).then((result) => {
           for(let tkn in result.data){
             let content=result.data[tkn];
@@ -60,6 +61,7 @@ module.exports={
               that.tkns.push({symbol: content.symbol, value: content.pending_token, precision: content.precision});
             }
           }
+          that.$store.commit("setLoading", false);
         });
       }
       else{ console.log("Nothing to do..."); }
@@ -91,6 +93,7 @@ module.exports={
         });
       }
       else {
+        this.$store.commit("setLoading", true);
         let json = [];
         let msg = "You have claimed ";
         const that = this;
@@ -121,6 +124,7 @@ module.exports={
               position: "top-right",
               theme: "bubble",
             });
+            this.$store.commit("setLoading", false);
           }
         });
       }
