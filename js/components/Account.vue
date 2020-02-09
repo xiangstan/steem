@@ -14,7 +14,7 @@
               <p class="title is-4">
                 {{metadata.name}}
                 <span class="likr" v-if="likr">
-                  <img src="/images/clap.png" />
+                  <img src="./images/clap.png" />
                 </span>
               </p>
               <p class="subtitle is-6 is-italic">@{{profile.name}}</p>
