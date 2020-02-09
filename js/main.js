@@ -2,9 +2,11 @@ Vue.config.devtools=true;
 
 const store = new Vuex.Store({
   state: {
+    loading: false,
     main: {
       steemId: false,
       profile: {},
+      tokenExpand: false,
       tokens: {}
     },
     msg: {
@@ -14,6 +16,12 @@ const store = new Vuex.Store({
     }
   },
   mutations: {
+    setLoading(state, status) {
+      state.loading = status;
+    },
+    updMainUnclaimed(state, status) {
+      state.main.tokenExpand = status;
+    },
     updateMainSteemId(state, value){
       state.main.steemId = value;
     }
