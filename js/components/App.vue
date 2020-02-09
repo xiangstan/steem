@@ -1,32 +1,35 @@
 <template>
-<div class="container">
-  <div class="content">
-    <h1 class="has-text-centered is-size-3">STEEM Info Center</h1>
-    <div class="columns">
-      <div class="column is-half">
-        <div class="field has-addons">
-          <div class="control is-expanded">
-            <input class="input" placeholder="Provide a STEEM ID" v-model="user.main" />
-          </div>
-          <div class="control">
-            <a class="button is-info" data-method="main" @click="searchId">
-              <i aria-hidden="true" class="fas fa-search fa-fw"></i> Search
-            </a>
+<div class="full-screen">
+  <div class="container">
+    <div class="content">
+      <h1 class="has-text-centered is-size-3">STEEM Info Center</h1>
+      <div class="columns">
+        <div class="column is-half">
+          <div class="field has-addons">
+            <div class="control is-expanded">
+              <input class="input" placeholder="Provide a STEEM ID" v-model="user.main" />
+            </div>
+            <div class="control">
+              <a class="button is-info" data-method="main" @click="searchId">
+                <i aria-hidden="true" class="fas fa-search fa-fw"></i> Search
+              </a>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    <div class="columns">
-      <div class="column is-one-third">
-        <prof-box :profile="profile.main" :show="show.mainProfile" ref="profile"></prof-box>
+      <div class="columns">
+        <div class="column is-one-third">
+          <prof-box :profile="profile.main" :show="show.mainProfile" ref="profile"></prof-box>
+        </div>
+        <div class="column">
+          <token-list :tokens="tokens.main"></token-list>
+          <un-claimed :steem="steem"></un-claimed>
+        </div>
       </div>
-      <div class="column">
-        <token-list :tokens="tokens.main"></token-list>
-        <un-claimed :steem="steem"></un-claimed>
-      </div>
     </div>
+    <notify-msg :msg="msg"></notify-msg>
   </div>
-  <notify-msg :msg="msg"></notify-msg>
+  <loading-box></loading-box>
 </div>
 </template>
 
@@ -34,6 +37,7 @@
 module.exports={
   components:{
     "prof-box": window.httpVueLoader("./js/components/Account.vue"),
+    "loading-box": window.httpVueLoader("./js/components/Loading.vue"),
     "notify-msg": window.httpVueLoader("./js/components/Notify.vue"),
     "token-list": window.httpVueLoader("./js/components/Tokens.vue"),
     "un-claimed": window.httpVueLoader("./js/components/Unclaimed.vue")
@@ -83,6 +87,7 @@ module.exports={
       if(steemId){
         this.user.main = steemId;
         this.$store.commit("updateMainSteemId", steemId);
+        this.$store.commit("setLoading", true);
         this.searchSteemAccount(steemId, "main");
       }
     },
@@ -93,7 +98,7 @@ module.exports={
       this.searchSteemAccount(steemId, method);
     },
     /* Steem Engine Query */
-    SscQuery: function(steemId, contract, table, query, limit=1000, offset=0) {
+    SscQuery: function(contract, table, query, limit=1000, offset=0) {
       return new Promise((resolve, reject) => {
         this.ssc.find(
           contract,
@@ -122,6 +127,7 @@ module.exports={
         that.steem.api.getAccounts([steemId], function(err, result) {
           if(err===null){
             localStorage.setItem("steemId", steemId);
+            that.$store.commit("updateMainSteemId", steemId);
             that.profile[method] = result[0];
             that.show[method+"Profile"] = true;
           }
@@ -134,13 +140,28 @@ module.exports={
           }
         });
         that.searchToken(steemId, "main");
+        this.$store.commit("setLoading", false);
       }
     },
     /* search tokens */
     searchToken: function(steemId, method) {
       const that = this;
-      that.SscQuery(steemId, "tokens", "balances", { account: steemId }).then((result) => {
+      that.SscQuery("tokens", "balances", { account: steemId }).then((result) => {
         that.tokens[method] = result;
+      });
+    },
+    /* show toast message */
+    toast: function(msg) {
+      this.$toasted.show(msg, {
+        action: {
+          text: "CLOSE",
+          onClick: (e, toastObject) => {
+            toastObject.goAway(0);
+          }
+        },
+        duration: 10000,
+        position: "top-right",
+        theme: "bubble",
       });
     }
   },
@@ -149,3 +170,11 @@ module.exports={
   }
 };
 </script>
+
+<style scoped>
+.full-screen {
+  height: 100%;
+  position: relative;
+  width: 100%;
+}
+</style>
