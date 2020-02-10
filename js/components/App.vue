@@ -20,6 +20,7 @@
       <div class="columns">
         <div class="column is-one-third">
           <prof-box :profile="profile.main" :show="show.mainProfile" ref="profile"></prof-box>
+          <authorities :apps="profile.main.posting.account_auths" ref="authorized"></authorities>
         </div>
         <div class="column">
           <token-list :tokens="tokens.main" v-if="user.main"></token-list>
@@ -36,9 +37,10 @@
 <script>
 module.exports={
   components:{
-    "prof-box": window.httpVueLoader("./js/components/Account.vue"),
+    "authorities": window.httpVueLoader("./js/components/Authorities.vue"),
     "loading-box": window.httpVueLoader("./js/components/Loading.vue"),
     "notify-msg": window.httpVueLoader("./js/components/Notify.vue"),
+    "prof-box": window.httpVueLoader("./js/components/Account.vue"),
     "token-list": window.httpVueLoader("./js/components/Tokens.vue"),
     "un-claimed": window.httpVueLoader("./js/components/Unclaimed.vue")
   },
