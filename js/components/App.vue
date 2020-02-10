@@ -22,8 +22,8 @@
           <prof-box :profile="profile.main" :show="show.mainProfile" ref="profile"></prof-box>
         </div>
         <div class="column">
-          <token-list :tokens="tokens.main"></token-list>
-          <un-claimed :steem="steem" ref="unclaimed"></un-claimed>
+          <token-list :tokens="tokens.main" v-if="user.main"></token-list>
+          <un-claimed :steem="steem" ref="unclaimed" v-if="user.main"></un-claimed>
         </div>
       </div>
     </div>
