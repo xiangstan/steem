@@ -9,6 +9,7 @@ const store = new Vuex.Store({
       tokenExpand: false,
       tokens: {}
     },
+    steemGlobalProps: false,
     msg: {
       alert: false,
       code: false,
@@ -19,10 +20,14 @@ const store = new Vuex.Store({
     setLoading(state, status) {
       state.loading = status;
     },
+    /* update steem dynamic global properties */
+    updateGlobal(state, value) {
+      state.steemGlobalProps = value || false;
+    },
     updMainUnclaimed(state, status) {
       state.main.tokenExpand = status;
     },
-    updateMainSteemId(state, value){
+    updateMainSteemId(state, value) {
       state.main.steemId = value;
     }
   },

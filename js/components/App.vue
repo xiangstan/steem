@@ -19,7 +19,7 @@
       </div>
       <div class="columns">
         <div class="column is-one-third">
-          <prof-box :profile="profile.main" :show="show.mainProfile" ref="profile"></prof-box>
+          <prof-box :profile="profile.main" :show="show.mainProfile" :steem="steem" ref="profile"></prof-box>
           <authorities :apps="profile.main.posting.account_auths" ref="authorized" v-if="profile.main"></authorities>
         </div>
         <div class="column">
@@ -85,6 +85,7 @@ module.exports={
     init: function() {
       const that = this;
       this.steem.api.setOptions({ url: "https://anyx.io" });
+      this.SteemGlobalProperties();
       const steemId = localStorage.getItem("steemId");
       if(steemId){
         this.user.main = steemId;
@@ -152,6 +153,14 @@ module.exports={
       const that = this;
       that.SscQuery("tokens", "balances", { account: steemId }).then((result) => {
         that.tokens[method] = result;
+      });
+    },
+    SteemGlobalProperties: function(){
+      const that = this;
+      that.steem.api.getDynamicGlobalProperties(function(err,result) {
+        if(err === null) {
+          that.$store.commit("updateGlobal", result);
+        }
       });
     },
     /* show toast message */
