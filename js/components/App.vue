@@ -23,7 +23,7 @@
         </div>
         <div class="column">
           <token-list :tokens="tokens.main"></token-list>
-          <un-claimed :steem="steem"></un-claimed>
+          <un-claimed :steem="steem" ref="unclaimed"></un-claimed>
         </div>
       </div>
     </div>
@@ -95,6 +95,8 @@ module.exports={
       const method = e.currentTarget.dataset.method;
       const steemId = this.user[method];
       this.tokens[method] = false;
+      this.$store.commit("updMainUnclaimed", false);
+      this.$refs.unclaimed.tkns = [];
       this.searchSteemAccount(steemId, method);
     },
     /* Steem Engine Query */
