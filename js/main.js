@@ -30,7 +30,7 @@ const store = new Vuex.Store({
 
 window.Vue.use(Toasted);
 
-const App=new window.Vue({
+const App = new window.Vue({
   el: "#app",
   store,
   components:{

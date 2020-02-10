@@ -20,7 +20,7 @@
       <div class="columns">
         <div class="column is-one-third">
           <prof-box :profile="profile.main" :show="show.mainProfile" ref="profile"></prof-box>
-          <authorities :apps="profile.main.posting.account_auths" ref="authorized"></authorities>
+          <authorities :apps="profile.main.posting.account_auths" ref="authorized" v-if="profile.main"></authorities>
         </div>
         <div class="column">
           <token-list :tokens="tokens.main" v-if="user.main"></token-list>
