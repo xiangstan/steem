@@ -65,14 +65,24 @@
             <p>
               <strong>Steem Power:</strong>
               <template v-if="GlobalProps&&steempower">
-                {{(parseFloat(steempower.own) + CalcDelegated(steempower, true)).toFixed(2)}}
-                (<em>{{steempower.own}} {{delegatedpower}}</em>)
+                {{CommaSeparated(CalcSteemPower.toFixed(2))}}
+                (<em>{{CommaSeparated(steempower.own)}} {{delegatedpower}}</em>)
               </template>
               <template v-else>
                 <i aria-hidden="true" class="fas fa-spinner fa-spin"></i> Loading...
               </template>
             </p>
             <p><strong>Voting Power:</strong> {{votepower}}%</p>
+            <!-- <p>
+              <strong>Upvote:</strong> ${{upvote}}
+            </p> -->
+            <div class="line-break"></div>
+            <p>
+              <strong>Steem Price:</strong> ${{MedianPrice}}
+            </p>
+            <p v-if="RecentClaim">
+              <strong>Recent Claims:</strong> {{CommaSeparated(RecentClaim / 1e9)}} B
+            </p>
           </div>
         </div>
       </div>
@@ -86,6 +96,9 @@
 <script>
 module.exports={
   computed: {
+    CalcSteemPower: function() {
+      return parseFloat(this.steempower.own) + this.CalcDelegated(this.steempower, true);
+    },
     /* steem user delegated power */
     delegatedpower: function() {
       return this.CalcDelegated(this.steempower, false);
@@ -112,7 +125,12 @@ module.exports={
       if(temp) {
         return parseFloat(temp.base.split(" ")[0]) / parseFloat(temp.quote.split(" ")[0]);
       }
-      else{ return false; }
+      else { return false; }
+    },
+    /* recent claim */
+    RecentClaim: function() {
+      if(this.RewardFund) { return this.RewardFund.recent_claims; }
+      else { return false; }
     },
     /* steem reward balance */
     RewardBalance: function() {
@@ -126,22 +144,21 @@ module.exports={
       /* https://steemit.com/utopian-io/@stoodkev/steemjs-for-dummies-2-calculate-the-user-s-steem-power */
       if(this.GlobalProps){
         return {
-          own: this.steem.formatter.vestToSteem(this.profile.vesting_shares, this.GlobalProps.total_vesting_shares, this.GlobalProps.total_vesting_fund_steem).toFixed(2),
-          delegated: this.steem.formatter.vestToSteem(
+          own: parseFloat(this.steem.formatter.vestToSteem(this.profile.vesting_shares, this.GlobalProps.total_vesting_shares, this.GlobalProps.total_vesting_fund_steem).toFixed(2)),
+          delegated: parseFloat(this.steem.formatter.vestToSteem(
             this.profile.delegated_vesting_shares,
             this.GlobalProps.total_vesting_shares,
             this.GlobalProps.total_vesting_fund_steem
-            ).toFixed(2),
-          received: this.steem.formatter.vestToSteem(
+          ).toFixed(2)),
+          received: parseFloat(this.steem.formatter.vestToSteem(
             this.profile.received_vesting_shares,
             this.GlobalProps.total_vesting_shares,
             this.GlobalProps.total_vesting_fund_steem
-            ).toFixed(2),
+          ).toFixed(2))
         };
       }
       else{ return false; }
     },
-    /* user delegated vesting shares */
     VestingDelegated: function() {
       return parseFloat(this.profile.delegated_vesting_shares.split(" ")[0]);
     },
@@ -156,7 +173,7 @@ module.exports={
     /* total vesting shares */
     VestingTotal: function() {
       if(this.GlobalProps) {
-        return this.VestingShares + this.VestingReceived - this.VestingDelegated;
+        return parseFloat(this.GlobalProps.total_vesting_fund_steem.split(" ")[0]);
       }
       else{ return false; }
     },
@@ -167,28 +184,31 @@ module.exports={
       return Math.min((this.profile.voting_power + (10000 * sec / 432000)) / 100, 100).toFixed(2);
     },
     /* upvote value */
-    upvote: function() {
+    /*upvote: function() {
+      // https://developers.steem.io/tutorials-recipes/estimate_upvote
       if(this.VestingTotal && this.RewardFund && this.RewardBalance && this.MedianPrice) {
-        let vest = this.VestingTotal * 1e6;
-        //return vest;
-        let rshares = vest * (this.profile.voting_power * 100 / 10000 ) / 50 / 10000;
-        return rshares / parseInt(this.RewardFund.recent_claims) * this.RewardBalance * this.MedianPrice;
+        let vest = (this.VestingTotal + this.VestingReceived - this.VestingDelegated) * 1e6;
+        let rshares = vest * this.profile.voting_power / 5e7;
+        return (rshares / parseInt(this.RewardFund.recent_claims) * this.RewardBalance * this.MedianPrice).toFixed(6);
       }
       else{ return false; }
-    }
+    }*/
   },
   methods: {
     CalcDelegated: function(value, status = false) {
       if(this.steempower){
         let received = parseFloat(this.steempower.received);
         let delegated = parseFloat(this.steempower.delegated);
-        if(!status) {
+        if (!status) {
           let sign = (received > delegated)? "+" : "-";
-          return sign + " " + Math.abs(received - delegated);
+          return sign + " " + this.CommaSeparated(Math.abs(received - delegated));
         }
         else { return (received - delegated); }
       }
       else{ return false; }
+    },
+    CommaSeparated: function(value) {
+      return parseInt(value).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
   },
   props:{
