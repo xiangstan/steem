@@ -90,6 +90,7 @@ module.exports={
     delegatedpower: function() {
       return this.CalcDelegated(this.steempower, false);
     },
+    /* steem dynamic global properties */
     GlobalProps: function() {
       return this.$store.state.steemGlobalProps;
     },
@@ -106,6 +107,20 @@ module.exports={
       const temp = JSON.parse(this.profile.json_metadata)
       return temp.profile;
     },
+    MedianPrice: function() {
+      let temp = this.$store.state.curMHisPrice;
+      if(temp) {
+        return parseFloat(temp.base.split(" ")[0]) / parseFloat(temp.quote.split(" ")[0]);
+      }
+      else{ return false; }
+    },
+    /* steem reward balance */
+    RewardBalance: function() {
+      if(this.RewardFund){ return parseFloat(this.RewardFund.reward_balance.split(" ")[0]); }
+      else{ return false; }
+    },
+    /* steem reward fund */
+    RewardFund: function() { return this.$store.state.rewardFund; },
     /* steem user self steem power */
     steempower: function() {
       /* https://steemit.com/utopian-io/@stoodkev/steemjs-for-dummies-2-calculate-the-user-s-steem-power */
@@ -126,11 +141,40 @@ module.exports={
       }
       else{ return false; }
     },
+    /* user delegated vesting shares */
+    VestingDelegated: function() {
+      return parseFloat(this.profile.delegated_vesting_shares.split(" ")[0]);
+    },
+    /* user received vesting shares */
+    VestingReceived: function() {
+      return parseFloat(this.profile.received_vesting_shares.split(" ")[0]);
+    },
+    /* vesting shares */
+    VestingShares: function() {
+      return parseFloat(this.GlobalProps.total_vesting_shares.split(" ")[0]);
+    },
+    /* total vesting shares */
+    VestingTotal: function() {
+      if(this.GlobalProps) {
+        return this.VestingShares + this.VestingReceived - this.VestingDelegated;
+      }
+      else{ return false; }
+    },
     /* steem user voting power */
     votepower: function() {
       /* https://steemit.com/utopian-io/@stoodkev/steem-js-for-dummies-1-how-to-calculate-the-current-voting-power */
       const sec = (new Date - new Date(this.profile.last_vote_time + "Z")) / 1000;
       return Math.min((this.profile.voting_power + (10000 * sec / 432000)) / 100, 100).toFixed(2);
+    },
+    /* upvote value */
+    upvote: function() {
+      if(this.VestingTotal && this.RewardFund && this.RewardBalance && this.MedianPrice) {
+        let vest = this.VestingTotal * 1e6;
+        //return vest;
+        let rshares = vest * (this.profile.voting_power * 100 / 10000 ) / 50 / 10000;
+        return rshares / parseInt(this.RewardFund.recent_claims) * this.RewardBalance * this.MedianPrice;
+      }
+      else{ return false; }
     }
   },
   methods: {

@@ -84,14 +84,19 @@ module.exports={
     },*/
     init: function() {
       const that = this;
-      this.steem.api.setOptions({ url: "https://anyx.io" });
-      this.SteemGlobalProperties();
+      that.steem.api.setOptions({ url: "https://anyx.io" });
+      that.SteemGlobalProperties();
+      window.setInterval(function() { that.SteemGlobalProperties(); }, 120000);
+      window.setTimeout(function() {
+        that.SteemCurMedHisPrice();
+        that.SteemGetRewardFund();
+      }, 100);
       const steemId = localStorage.getItem("steemId");
       if(steemId){
-        this.user.main = steemId;
-        this.$store.commit("updateMainSteemId", steemId);
-        this.$store.commit("setLoading", true);
-        this.searchSteemAccount(steemId, "main");
+        that.user.main = steemId;
+        that.$store.commit("updateMainSteemId", steemId);
+        that.$store.commit("setLoading", true);
+        that.searchSteemAccount(steemId, "main");
       }
     },
     searchId: function(e) {
@@ -153,6 +158,32 @@ module.exports={
       const that = this;
       that.SscQuery("tokens", "balances", { account: steemId }).then((result) => {
         that.tokens[method] = result;
+      });
+    },
+    /* generic steem.api call without query parameter */
+    SteemApiNoQry: function(api, callback) {
+      const that = this;
+      that.steem.api[api](function(err, result) { callback(err, result); });
+    },
+    /* generic steem.api call with query parameter */
+    SteemApiQry: function(api, query, callback) {
+      const that = this;
+      that.steem.api[api](query, function(err, result) { callback(err, result); });
+    },
+    /* current median history price */
+    SteemCurMedHisPrice: function() {
+      const that = this;
+      that.SteemApiNoQry("getCurrentMedianHistoryPrice", function(err, result) {
+        if (err) {  console.err(err); }
+        that.$store.commit("updateHisPrice", result);
+      });
+    },
+    /* get reward fund */
+    SteemGetRewardFund: function() {
+      const that = this;
+      that.SteemApiQry("getRewardFund", "post", function(err, result){
+        if (err) { console.error(err); }
+        that.$store.commit("updateRewardFund", result);
       });
     },
     SteemGlobalProperties: function(){

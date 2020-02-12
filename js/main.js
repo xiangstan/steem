@@ -2,6 +2,7 @@ Vue.config.devtools=true;
 
 const store = new Vuex.Store({
   state: {
+    curMHisPrice: false,
     loading: false,
     main: {
       steemId: false,
@@ -9,6 +10,7 @@ const store = new Vuex.Store({
       tokenExpand: false,
       tokens: {}
     },
+    rewardFund: false,
     steemGlobalProps: false,
     msg: {
       alert: false,
@@ -24,11 +26,19 @@ const store = new Vuex.Store({
     updateGlobal(state, value) {
       state.steemGlobalProps = value || false;
     },
+    /* update steem current median history price */
+    updateHisPrice(state, value) {
+      state.curMHisPrice = value;
+    },
     updMainUnclaimed(state, status) {
       state.main.tokenExpand = status;
     },
     updateMainSteemId(state, value) {
       state.main.steemId = value;
+    },
+    /* update steem reward fund */
+    updateRewardFund(state, value) {
+      state.rewardFund = value;
     }
   },
 });
