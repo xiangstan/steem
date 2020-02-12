@@ -1,7 +1,6 @@
 <template>
 <div class="full-screen">
   <div class="container">
-    <div class="content">
       <h1 class="has-text-centered is-size-3">STEEM Info Center</h1>
       <div class="columns">
         <div class="column is-half">
@@ -21,13 +20,13 @@
         <div class="column is-one-third">
           <prof-box :profile="profile.main" :show="show.mainProfile" :steem="steem" ref="profile"></prof-box>
           <authorities :apps="profile.main.posting.account_auths" ref="authorized" v-if="profile.main"></authorities>
+          <follow :steem="steem"></follow>
         </div>
         <div class="column">
           <token-list :tokens="tokens.main" v-if="user.main"></token-list>
           <un-claimed :steem="steem" ref="unclaimed" v-if="user.main"></un-claimed>
         </div>
       </div>
-    </div>
     <notify-msg :msg="msg"></notify-msg>
   </div>
   <loading-box></loading-box>
@@ -38,6 +37,7 @@
 module.exports={
   components:{
     "authorities": window.httpVueLoader("./js/components/Authorities.vue"),
+    "follow": window.httpVueLoader("./js/components/Follow.vue"),
     "loading-box": window.httpVueLoader("./js/components/Loading.vue"),
     "notify-msg": window.httpVueLoader("./js/components/Notify.vue"),
     "prof-box": window.httpVueLoader("./js/components/Account.vue"),
@@ -104,6 +104,8 @@ module.exports={
       const steemId = this.user[method];
       this.tokens[method] = false;
       this.$store.commit("updMainUnclaimed", false);
+      this.$store.commit("updFollowList", []);
+      this.$store.commit("setLoading", true);
       this.$refs.unclaimed.tkns = [];
       this.searchSteemAccount(steemId, method);
     },
@@ -150,8 +152,8 @@ module.exports={
           }
         });
         that.searchToken(steemId, "main");
-        this.$store.commit("setLoading", false);
       }
+      that.$store.commit("setLoading", false);
     },
     /* search tokens */
     searchToken: function(steemId, method) {

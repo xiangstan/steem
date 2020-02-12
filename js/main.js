@@ -3,6 +3,7 @@ Vue.config.devtools=true;
 const store = new Vuex.Store({
   state: {
     curMHisPrice: false,
+    followList: [],
     loading: false,
     main: {
       steemId: false,
@@ -21,6 +22,10 @@ const store = new Vuex.Store({
   mutations: {
     setLoading(state, status) {
       state.loading = status;
+    },
+    /* update follow list */
+    updFollowList(state, value) {
+      state.followList = value;
     },
     /* update steem dynamic global properties */
     updateGlobal(state, value) {
