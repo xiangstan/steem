@@ -1,32 +1,37 @@
 <template>
 <div class="full-screen">
   <div class="container">
-      <h1 class="has-text-centered is-size-3">STEEM Info Center</h1>
-      <div class="columns">
-        <div class="column is-half">
-          <div class="field has-addons">
-            <div class="control is-expanded">
-              <input class="input" placeholder="Provide a STEEM ID" v-model="user.main" />
-            </div>
-            <div class="control">
-              <a class="button is-info" data-method="main" @click="searchId">
-                <i aria-hidden="true" class="fas fa-search fa-fw"></i> Search
-              </a>
-            </div>
+    <div class="is-relative">
+      <h1 class="has-text-centered is-size-3">
+        STEEM Info Center
+      </h1>
+      <Language></Language>
+    </div>
+    <div class="columns">
+      <div class="column is-half">
+        <div class="field has-addons">
+          <div class="control is-expanded">
+            <input class="input" placeholder="Provide a STEEM ID" v-model="user.main" />
+          </div>
+          <div class="control">
+            <a class="button is-info" data-method="main" @click="searchId">
+              <i aria-hidden="true" class="fas fa-search fa-fw"></i> Search
+            </a>
           </div>
         </div>
       </div>
-      <div class="columns">
-        <div class="column is-one-third">
-          <prof-box :profile="profile.main" :show="show.mainProfile" :steem="steem" ref="profile"></prof-box>
-          <authorities :apps="profile.main.posting.account_auths" ref="authorized" v-if="profile.main"></authorities>
-          <follow :steem="steem"></follow>
-        </div>
-        <div class="column">
-          <token-list :tokens="tokens.main" v-if="user.main"></token-list>
-          <un-claimed :steem="steem" ref="unclaimed" v-if="user.main"></un-claimed>
-        </div>
+    </div>
+    <div class="columns">
+      <div class="column is-one-third">
+        <prof-box :profile="profile.main" :show="show.mainProfile" :steem="steem" ref="profile"></prof-box>
+        <authorities :apps="profile.main.posting.account_auths" ref="authorized" v-if="profile.main"></authorities>
+        <follow :steem="steem"></follow>
       </div>
+      <div class="column">
+        <token-list :tokens="tokens.main" v-if="user.main"></token-list>
+        <un-claimed :steem="steem" ref="unclaimed" v-if="user.main"></un-claimed>
+      </div>
+    </div>
     <notify-msg :msg="msg"></notify-msg>
   </div>
   <loading-box></loading-box>
@@ -38,6 +43,7 @@ module.exports={
   components:{
     "authorities": window.httpVueLoader("./js/components/Authorities.vue"),
     "follow": window.httpVueLoader("./js/components/Follow.vue"),
+    "Language": window.httpVueLoader("./js/components/Language.vue"),
     "loading-box": window.httpVueLoader("./js/components/Loading.vue"),
     "notify-msg": window.httpVueLoader("./js/components/Notify.vue"),
     "prof-box": window.httpVueLoader("./js/components/Account.vue"),
@@ -222,5 +228,11 @@ module.exports={
   height: 100%;
   position: relative;
   width: 100%;
+}
+.translate {
+  position: absolute;
+  right: 5px;
+  top: 5px;
+  z-index: 10;
 }
 </style>
