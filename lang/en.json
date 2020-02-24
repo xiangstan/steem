@@ -1,0 +1,17 @@
+{
+  "profile": {
+    "savings": "Savings",
+    "steem": "STEEM",
+    "steem_power": "STEEM Power",
+    "steem_price": "STEEM Price",
+    "voting_power": "Voting Power"
+  },
+  "token": {
+    "balance": "Balance",
+    "claim_all": "Claim All",
+    "stake": "Stake",
+    "symbol": "Symbol",
+    "token_wallet": "Token Wallet",
+    "unclaimed_tokens": "Unclaimed Tokens"
+  }
+}

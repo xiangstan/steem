@@ -90,6 +90,7 @@ module.exports={
     },*/
     init: function() {
       const that = this;
+      that.GetLang();
       that.steem.api.setOptions({ url: "https://anyx.io" });
       that.SteemGlobalProperties();
       window.setInterval(function() { that.SteemGlobalProperties(); }, 120000);
@@ -104,6 +105,23 @@ module.exports={
         that.$store.commit("setLoading", true);
         that.searchSteemAccount(steemId, "main");
       }
+    },
+    /* get initial language pack */
+    GetLang: function(lang = false) {
+      if(!lang) {
+        lang = localStorage.getItem("lang");
+        if(lang===null){
+          lang = "en";
+        }
+      }
+      localStorage.setItem("lang",lang);
+      axios.get("./lang/"+lang+".json")
+        .then((result) => {
+          this.$store.commit("setLang", result.data);
+        })
+        .catch((error) => {
+          console.err(error);
+        });
     },
     searchId: function(e) {
       const method = e.currentTarget.dataset.method;

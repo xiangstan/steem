@@ -4,6 +4,7 @@ const store = new Vuex.Store({
   state: {
     curMHisPrice: false,
     followList: [],
+    lang: false,
     loading: false,
     main: {
       steemId: false,
@@ -20,6 +21,10 @@ const store = new Vuex.Store({
     }
   },
   mutations: {
+    /* load language pack to vuex */
+    setLang(state, value) {
+      state.lang = value;
+    },
     setLoading(state, status) {
       state.loading = status;
     },

@@ -1,7 +1,7 @@
 <template>
-  <div class="message is-info">
+  <div class="message is-info" v-if="Lang">
     <div class="message-header">
-      Token Wallet
+      {{Lang.token.token_wallet}}
       <a class="button-expand" @click="tokenExpand=!tokenExpand">[ <span>{{TokenExpandSign}}</span> ]</a>
     </div>
     <div class="message-body" v-if="tokens.length>0">
@@ -11,12 +11,11 @@
             <div class="column is-one-quarter">
               <label class="checkbox">
                 <input type="checkbox" v-model="select" @change="SelectAll" />
-                Symbol
+                {{Lang.token.symbol}}
               </label>
-
             </div>
             <div class="column">
-              Balance (Stake)
+              {{Lang.token.balance}} ({{Lang.token.stake}})
             </div>
           </div>
         </div>
@@ -67,6 +66,7 @@ module.exports={
       }
       return temp.sort((a, b) => (a.symbol > b.symbol) ? 1 : -1);
     },
+    Lang: function() { return this.$store.state.lang; },
     SteemId: function() { return this.$store.state.main.steemId; },
     TokenExpandSign: function() { return (this.tokenExpand) ? "-" : "+"; },
     TokenExpandCount: function() {

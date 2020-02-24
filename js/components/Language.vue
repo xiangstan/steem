@@ -14,6 +14,8 @@
 
 <script>
 module.exports={
+  computed: {
+  },
   data: function() {
     return {
       Show: false
@@ -22,7 +24,8 @@ module.exports={
   methods: {
     Select: function(e) {
       const lang = e.currentTarget.dataset.lang;
-      console.log(lang)
+      this.Show = false;
+      this.$parent.GetLang(lang);
     }
   }
 };

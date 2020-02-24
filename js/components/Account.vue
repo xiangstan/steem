@@ -57,13 +57,13 @@
       <div class="card">
         <div class="card-content">
           <div class="content">
-            <p><strong>Steem:</strong> {{profile.balance}}</p>
+            <p><strong>{{Lang.profile.steem}}:</strong> {{profile.balance}}</p>
             <!-- <p><strong>Steem Power:</strong> {{profile.balance}}</p> -->
             <p><strong>Steem Dollars:</strong> {{profile.sbd_balance}}</p>
-            <p><strong>Savings:</strong> {{profile.savings_balance}}</p>
+            <p><strong>{{Lang.profile.savings}}:</strong> {{profile.savings_balance}}</p>
             <div class="line-break"></div>
             <p>
-              <strong>Steem Power:</strong>
+              <strong>{{Lang.profile.steem_power}}:</strong>
               <template v-if="GlobalProps&&steempower">
                 {{CommaSeparated(CalcSteemPower.toFixed(2))}}
                 (<em>{{CommaSeparated(steempower.own)}} {{delegatedpower}}</em>)
@@ -72,13 +72,13 @@
                 <i aria-hidden="true" class="fas fa-spinner fa-spin"></i> Loading...
               </template>
             </p>
-            <p><strong>Voting Power:</strong> {{votepower}}%</p>
+            <p><strong>{{Lang.profile.voting_power}}:</strong> {{votepower}}%</p>
             <!-- <p>
               <strong>Upvote:</strong> ${{upvote}}
             </p> -->
             <div class="line-break"></div>
             <p>
-              <strong>Steem Price:</strong> ${{MedianPrice}}
+              <strong>{{Lang.profile.steem_price}}:</strong> ${{MedianPrice}}
             </p>
             <p v-if="RecentClaim">
               <strong>Recent Claims:</strong> {{CommaSeparated(RecentClaim / 1e9)}} B
@@ -116,6 +116,7 @@ module.exports={
       }
       else { return false; }
     },
+    Lang: function() { return this.$store.state.lang; },
     metadata: function() {
       const temp = JSON.parse(this.profile.json_metadata)
       return temp.profile;

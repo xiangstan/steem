@@ -1,7 +1,7 @@
 <template>
-  <div class="list">
+  <div class="list" v-if="Lang">
     <div class="list-item has-background-info has-text-weight-bold has-text-white">
-      Unclaimed Tokens <span v-if="TokenExpand">(<em>{{tkns.length}}</em>)</span>
+      {{Lang.token.unclaimed_tokens}} <span v-if="TokenExpand">(<em>{{tkns.length}}</em>)</span>
       <a class="button-expand is-pulled-right" @click="fetchUnclaimed">[ <span>{{TokenExpandSign}}</span> ]</a>
     </div>
     <div class="list-item" v-for="tkn in tkns" v-if="TokenExpand">
@@ -25,7 +25,7 @@
         <div class="control">
           <button class="button is-info" @click="claimToken">
             <i aria-hidden="true" class="fas fa-coins fa-fw"></i>
-            Claim All
+            {{Lang.token.claim_all}}
           </button>
         </div>
       </div>
@@ -36,6 +36,7 @@
 <script>
 module.exports={
   computed: {
+    Lang: function() { return this.$store.state.lang; },
     SteemId: function() { return this.$store.state.main.steemId; },
     TokenExpandSign: function() { return (this.TokenExpand) ? "-" : "+"; },
     TokenExpand: function() { return this.$store.state.main.tokenExpand; }

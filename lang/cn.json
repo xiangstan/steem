@@ -1,0 +1,17 @@
+{
+  "profile": {
+    "savings": "储蓄",
+    "steem": "STEEM",
+    "steem_power": "代币影响力",
+    "steem_price": "STEEM价格",
+    "voting_power": "投票力"
+  },
+  "token": {
+    "balance": "余额",
+    "claim_all": "全部认领",
+    "stake": "标桩",
+    "symbol": "符号",
+    "token_wallet": "代币钱包",
+    "unclaimed_tokens": "未认领的代币"
+  }
+}
