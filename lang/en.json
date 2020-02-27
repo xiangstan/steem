@@ -1,4 +1,5 @@
 {
+  "index": "en",
   "profile": {
     "savings": "Savings",
     "steem": "STEEM",
@@ -9,6 +10,7 @@
   "token": {
     "balance": "Balance",
     "claim_all": "Claim All",
+    "sell": "Sell",
     "stake": "Stake",
     "symbol": "Symbol",
     "token_wallet": "Token Wallet",

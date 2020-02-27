@@ -51,7 +51,7 @@ module.exports={
     GetFollow: function(method) {
       const that = this;
       window.setTimeout(function() {
-        steem.api[method](that.SteemId, 0, "blog", 100, (err, result) => {
+        steem.api[method](that.SteemId, 0, "blog", 1000, (err, result) => {
           if (err) {
             that.$store.commit("updFollowList", [
               { "follower": '<p class="notification is-danger">Error: '+ err +'</p>' }

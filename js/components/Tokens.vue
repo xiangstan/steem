@@ -1,11 +1,30 @@
 <template>
-  <div class="message is-info" v-if="Lang">
-    <div class="message-header">
-      {{Lang.token.token_wallet}}
-      <a class="button-expand" @click="tokenExpand=!tokenExpand">[ <span>{{TokenExpandSign}}</span> ]</a>
+  <div class="list" v-if="Lang">
+    <div class="list-item has-background-info has-text-white">
+      <div class="level">
+        <div class="level-left">
+          <div class="level-item">
+            <h2 class="has-text-weight-bold">{{Lang.token.token_wallet}}</h2>
+          </div>
+        </div>
+        <div class="level-right">
+          <p>
+            <a class="button-expand has-text-weight-bold" @click="Expand">[ <span>{{TokenExpandSign}}</span> ]</a>
+          </p>
+        </div>
+      </div>
     </div>
-    <div class="message-body" v-if="tokens.length>0">
-      <div class="list">
+    <div class="item-list" v-if="tokens.length>0&&!tokenExpand">
+      <p class="notification is-warning">
+        <span v-if="Lang.index==='en'">
+          Click [ + ] to View All Tokens and Sell Button
+        </span>
+        <span v-else-if="Lang.index==='cn'">
+          点击 [ + ] 浏览所有的代币
+        </span>
+      </p>
+    </div>
+    <template v-if="tokenExpand">
         <div class="list-item has-background-info has-text-light">
           <div class="columns has-text-weight-bold is-uppercase">
             <div class="column is-one-quarter">
@@ -19,37 +38,33 @@
             </div>
           </div>
         </div>
-        <div class="list-item" v-for="(tkn,idx) in AllTokens" v-if="idx<TokenExpandCount">
-          <div class="columns">
-            <div class="column is-one-quarter has-text-weight-semibold">
-              <label class="checkbox">
-                <input :disabled="setDisabled(tkn.balance)" type="checkbox" :value="idx" v-model="form" />
-                {{tkn.symbol}}
-              </label>
-            </div>
-            <div class="column">
-              {{tkn.balance}} ({{showNull(tkn.stake)}})
-            </div>
+      <div class="list-item" v-for="(tkn,idx) in AllTokens">
+        <div class="columns">
+          <div class="column is-one-quarter has-text-weight-semibold">
+            <label class="checkbox">
+              <input :disabled="setDisabled(tkn.balance)" type="checkbox" :value="idx" v-model="form" />
+              {{tkn.symbol}}
+            </label>
           </div>
-        </div><!-- End of All Tokens -->
-        <div class="list-item has-background-light has-text-light">
-          <div class="field has-addons" v-if="tokenExpand">
-            <div class="control is-expanded">
-              <input class="input" id="active-key" type="password" placeholder="Active Key">
-            </div>
-            <div class="control">
-              <button class="button is-info" @click="Sell">
-                <i aria-hidden="true" class="fas fa-dollar-sign fa-fw"></i>
-                SELL
-              </button>
-            </div>
+          <div class="column">
+            {{tkn.balance}} ({{showNull(tkn.stake)}})
           </div>
-          <p class="notification is-warning" v-else>
-            Click [ + ] to View All Tokens and Sell Button
-          </p>
         </div>
-      </div><!-- End of List -->
-    </div><!-- End of Message Body -->
+      </div><!-- End of All Tokens -->
+      <div class="list-item">
+        <div class="field has-addons" >
+          <div class="control is-expanded">
+            <input class="input" id="active-key" type="password" placeholder="Active Key">
+          </div>
+          <div class="control">
+            <button class="button is-info" @click="Sell">
+              <i aria-hidden="true" class="fas fa-dollar-sign fa-fw"></i>
+              {{Lang.token.sell}}
+            </button>
+          </div>
+        </div>
+      </div>
+    </template>
   </div>
 </template>
 
@@ -83,14 +98,30 @@ module.exports={
     }
   },
   methods: {
+    /* expand toke list */
+    Expand: function() {
+      this.tokenExpand = !this.tokenExpand;
+      if(this.tokenExpand) {
+        console.log("Expanded");
+      }
+    },
+    /* get highest bid price */
+    GetHighBid: function() {
+      console.log(this.AllTokens);
+    },
     /* get token bid price */
-    GetPrice: function(data, i, key) {
+    GetPrice: function(data, i, key, sell = false) {
       const that = this;
       that.$parent.SscQuery("market", "metrics", { symbol: data.symbol }).then((result) => {
         //console.log(result[0].highestBid);
         let price = result[0].highestBid;
-        if(data.balance > 0 && price > 0) {
-          that.Transaction(data.symbol, data.balance, price, key, i);
+        if (sell) {
+          if(data.balance > 0 && price > 0) {
+            that.Transaction(data.symbol, data.balance, price, key, i);
+          }
+        }
+        else {
+          console.log(data.symbol, i, price);
         }
       });
     },
@@ -133,7 +164,7 @@ module.exports={
         }, (+temp.length + +1) * 1000)
         for (let i = 0; i < temp.length; i++) {
           let tkn = that.AllTokens[temp[i]];
-          that.GetPrice({balance: tkn.balance, symbol: tkn.symbol}, i, activekey);
+          that.GetPrice({balance: tkn.balance, symbol: tkn.symbol}, i, activekey, true);
         }
         that.form = [];
       }
@@ -188,6 +219,7 @@ module.exports={
 
 <style scoped>
 .button-expand{
+  color:#fff;
   text-decoration: none!important;
 }
 .button-expand span{

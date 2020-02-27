@@ -1,4 +1,5 @@
 {
+  "index": "cn",
   "profile": {
     "savings": "储蓄",
     "steem": "STEEM",
@@ -9,6 +10,7 @@
   "token": {
     "balance": "余额",
     "claim_all": "全部认领",
+    "sell": "出售",
     "stake": "标桩",
     "symbol": "符号",
     "token_wallet": "代币钱包",
