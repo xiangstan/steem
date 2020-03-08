@@ -1,7 +1,13 @@
 {
   "index": "cn",
+  "follow": {
+    "follower": "粉丝",
+    "following": "关注",
+    "nothing_to": "尚无数据可"
+  },
   "profile": {
     "savings": "储蓄",
+    "search": "搜索",
     "steem": "STEEM",
     "steem_power": "代币影响力",
     "steem_price": "STEEM价格",
@@ -15,5 +21,14 @@
     "symbol": "符号",
     "token_wallet": "代币钱包",
     "unclaimed_tokens": "未认领的代币"
+  },
+  "steem": {
+    "authorized_app": "授权应用",
+    "info_center": "信息中心",
+    "ing": "中",
+    "load": "加载",
+    "revoke_access": "取消授权",
+    "space": "",
+    "your": "你的"
   }
 }

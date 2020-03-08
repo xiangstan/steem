@@ -1,7 +1,13 @@
 {
   "index": "en",
+  "follow": {
+    "follower": "Follower",
+    "following": "Following",
+    "nothing_to": "Nothing to "
+  },
   "profile": {
     "savings": "Savings",
+    "search": "Search",
     "steem": "STEEM",
     "steem_power": "STEEM Power",
     "steem_price": "STEEM Price",
@@ -15,5 +21,14 @@
     "symbol": "Symbol",
     "token_wallet": "Token Wallet",
     "unclaimed_tokens": "Unclaimed Tokens"
+  },
+  "steem": {
+    "authorized_app": "Authorized Apps",
+    "info_center": " Infor Center",
+    "ing": "ing",
+    "load": "Load",
+    "revoke_access": "Revoke access from ",
+    "space": " ",
+    "your": "Your "
   }
 }

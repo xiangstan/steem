@@ -2,13 +2,13 @@
   <div>
     <div class="tabs is-toggle is-fullwidth follow-tab">
       <ul>
-        <li>
-          <a data-tab="follower" title="Followers" @click="SetActive">
+        <li :title="Lang.steem.your + Lang.steem.space + Lang.follow.follower">
+          <a data-tab="follower" @click="SetActive">
             <i aria-hidden="true" class="fas fa-user-friends"></i>
           </a>
         </li>
-        <li>
-          <a data-tab="following" title="Following" @click="SetActive">
+        <li :title="Lang.steem.your + Lang.steem.space + Lang.follow.following">
+          <a data-tab="following" @click="SetActive">
             <i aria-hidden="true" class="fas fa-user-plus"></i>
           </a>
         </li>
@@ -16,10 +16,12 @@
     </div>
     <div class="follow-list">
       <p class="is-italic" v-if="isList.length<1">
-        Nothing to load
+        {{Lang.follow.nothing_to + Lang.steem.load}}
       </p>
       <div v-else>
-        <p class="has-text-weight-bold is-capitalized">{{CurrentTab}}</p>
+        <p class="has-text-weight-bold is-capitalized">
+          {{Lang.steem.your + Lang.steem.space + Lang.follow[CurrentTab]}}
+        </p>
         <p v-for="user in isList">
           <a @click="Query(user[CurrentTab])">{{user[CurrentTab]}}</a>
         </p>
@@ -32,6 +34,7 @@
 module.exports={
   computed: {
     isList: function() { return this.$store.state.followList; },
+    Lang: function() { return this.$store.state.lang; },
     SteemId: function() { return this.$store.state.main.steemId; }
   },
   data: function() {

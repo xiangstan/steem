@@ -1,9 +1,9 @@
 <template>
-<div class="full-screen">
+<div class="full-screen" v-if="Lang">
   <div class="container">
     <div class="is-relative">
       <h1 class="has-text-centered is-size-3">
-        STEEM Info Center
+        STEEM{{Lang.steem.info_center}}
       </h1>
       <Language></Language>
     </div>
@@ -15,7 +15,7 @@
           </div>
           <div class="control">
             <a class="button is-info" data-method="main" @click="searchId">
-              <i aria-hidden="true" class="fas fa-search fa-fw"></i> Search
+              <i aria-hidden="true" class="fas fa-search fa-fw"></i> {{Lang.profile.search}}
             </a>
           </div>
         </div>
@@ -49,6 +49,9 @@ module.exports={
     "prof-box": window.httpVueLoader("./js/components/Account.vue"),
     "token-list": window.httpVueLoader("./js/components/Tokens.vue"),
     "un-claimed": window.httpVueLoader("./js/components/Unclaimed.vue")
+  },
+  computed: {
+    Lang: function() { return this.$store.state.lang; }
   },
   data: function() {
     return {

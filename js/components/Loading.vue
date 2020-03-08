@@ -1,8 +1,8 @@
 <template>
-  <div class="load-fullscreen" v-if="isLoading">
+  <div class="load-fullscreen" v-if="isLoading&&Lang">
     <div class="load-dialog">
       <i aria-hidden="true" class="fas fa-spinner fa-spin"></i>
-      Loading...
+      {{Lang.steem.load + Lang.steem.ing}}
     </div>
   </div>
 </template>
@@ -10,7 +10,8 @@
 <script>
 module.exports = {
   computed: {
-    isLoading: function() { return this.$store.state.loading; }
+    isLoading: function() { return this.$store.state.loading; },
+    Lang: function() { return this.$store.state.lang; }
   }
 }
 </script>
