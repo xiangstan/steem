@@ -30,6 +30,7 @@
       <div class="column">
         <token-list :tokens="tokens.main" v-if="user.main"></token-list>
         <un-claimed :steem="steem" ref="unclaimed" v-if="user.main"></un-claimed>
+        <steem-monsters ref="steemmonsters"></steem-monsters>
       </div>
     </div>
     <notify-msg :msg="msg"></notify-msg>
@@ -47,10 +48,12 @@ module.exports={
     "loading-box": window.httpVueLoader("./js/components/Loading.vue"),
     "notify-msg": window.httpVueLoader("./js/components/Notify.vue"),
     "prof-box": window.httpVueLoader("./js/components/Account.vue"),
+    "steem-monsters": window.httpVueLoader("./js/components/SteemMonsters.vue"),
     "token-list": window.httpVueLoader("./js/components/Tokens.vue"),
     "un-claimed": window.httpVueLoader("./js/components/Unclaimed.vue")
   },
   computed: {
+    Expands() { return this.$store.state.expand; },
     Lang: function() { return this.$store.state.lang; }
   },
   data: function() {
@@ -130,6 +133,9 @@ module.exports={
       const method = e.currentTarget.dataset.method;
       const steemId = this.user[method];
       this.tokens[method] = false;
+      for(let obj in this.Expands) {
+        this.$store.commit("updExpand", {});
+      }
       this.$store.commit("updMainUnclaimed", false);
       this.$store.commit("updFollowList", []);
       this.$store.commit("setLoading", true);

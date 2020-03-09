@@ -22,6 +22,23 @@
     "token_wallet": "代币钱包",
     "unclaimed_tokens": "未认领的代币"
   },
+  "sms": {
+    "alchemy_potion": "炼金术药水",
+    "basic": "玩家基本信息",
+    "bronze": "青铜",
+    "capture_rate": "捕获率",
+    "champion": "总冠军",
+    "collection": "收藏",
+    "diamond": "钻石",
+    "gold": "黄金",
+    "league": "等级",
+    "legendary_potion": "传说药水",
+    "orb": "精华球",
+    "ratio": "战绩",
+    "season": "赛季",
+    "silver": "白银",
+    "total": "总体"
+  },
   "steem": {
     "authorized_app": "授权应用",
     "info_center": "信息中心",

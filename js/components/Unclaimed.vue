@@ -138,13 +138,4 @@ module.exports={
 </script>
 
 <style scoped>
-.button-expand{
-  color:#fff;
-  text-decoration: none!important;
-}
-.button-expand span{
-  display: inline-block;
-  text-align: center;
-  width: 10px;
-}
 </style>

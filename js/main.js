@@ -3,6 +3,9 @@ Vue.config.devtools=true;
 const store = new Vuex.Store({
   state: {
     curMHisPrice: false,
+    expand: {
+      sms: false,
+    },
     followList: [],
     lang: false,
     loading: false,
@@ -27,6 +30,9 @@ const store = new Vuex.Store({
     },
     setLoading(state, status) {
       state.loading = status;
+    },
+    updExpand(state, data) {
+      state.expand[data.cat] = data.value;
     },
     /* update follow list */
     updFollowList(state, value) {
