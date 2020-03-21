@@ -33,6 +33,7 @@
   "steem": {
     "authorized_app": "授权应用",
     "chain": "链",
+    "check": "检查",
     "info_center": "信息中心",
     "ing": "中",
     "load": "加载",

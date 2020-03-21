@@ -33,6 +33,7 @@
   "steem": {
     "authorized_app": "Authorized Apps",
     "chain": "Chain",
+    "check": "Check",
     "info_center": " Infor Center",
     "ing": "ing",
     "load": "Load",

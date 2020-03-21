@@ -229,14 +229,20 @@ module.exports={
     },
     /* set current viewed page */
     SetPage: function(page = false) {
-      console.log(page)
       if(!page) page = "chain";
+      if(page !== "chain") { this.SetSteemApiOption(page); }
       localStorage.setItem("page", page);
       this.$store.commit("updVar", { cat: "Page", value: page});
     },
     /* set steem api option */
-    SetSteemApiOption: function(url) {
-      this.steem.api.setOptions({ url: url });
+    SetSteemApiOption: function(chain) {
+      const opt = {
+        hive: "https://anyx.io",
+        steem: "https://api.steemit.com"
+      };
+      if (chain !== "") {
+        this.steem.api.setOptions({ url: opt[chain] });
+      }
     },
     /* generic steem.api call without query parameter */
     SteemApiNoQry: function(api, callback) {
