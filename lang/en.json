@@ -13,15 +13,6 @@
     "steem_price": "STEEM Price",
     "voting_power": "Voting Power"
   },
-  "token": {
-    "balance": "Balance",
-    "claim_all": "Claim All",
-    "sell": "Sell",
-    "stake": "Stake",
-    "symbol": "Symbol",
-    "token_wallet": "Token Wallet",
-    "unclaimed_tokens": "Unclaimed Tokens"
-  },
   "sms": {
     "alchemy_potion": "Alchemy Potion",
     "basic": "Basic Player Information",
@@ -41,11 +32,23 @@
   },
   "steem": {
     "authorized_app": "Authorized Apps",
+    "chain": "Chain",
     "info_center": " Infor Center",
     "ing": "ing",
     "load": "Load",
+    "properties": "Properties",
     "revoke_access": "Revoke access from ",
+    "select": "Select",
     "space": " ",
     "your": "Your "
+  },
+  "token": {
+    "balance": "Balance",
+    "claim_all": "Claim All",
+    "sell": "Sell",
+    "stake": "Stake",
+    "symbol": "Symbol",
+    "token_wallet": "Token Wallet",
+    "unclaimed_tokens": "Unclaimed Tokens"
   }
 }

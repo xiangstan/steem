@@ -15,6 +15,7 @@ const store = new Vuex.Store({
       tokenExpand: false,
       tokens: {}
     },
+    Page: false,
     rewardFund: false,
     steemGlobalProps: false,
     msg: {
@@ -55,6 +56,9 @@ const store = new Vuex.Store({
     /* update steem reward fund */
     updateRewardFund(state, value) {
       state.rewardFund = value;
+    },
+    updVar(state, data) {
+      state[data.cat] = data.value;
     }
   },
 });
@@ -65,7 +69,7 @@ const App = new window.Vue({
   el: "#app",
   store,
   components:{
-    "App": window.httpVueLoader("./js/components/App.vue")
+    "App": window.httpVueLoader("./js/components/App.vue"),
   },
   template:"<App></App>"
 });

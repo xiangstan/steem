@@ -7,31 +7,53 @@
       </h1>
       <Language></Language>
     </div>
-    <div class="columns">
-      <div class="column is-half">
-        <div class="field has-addons">
-          <div class="control is-expanded">
-            <input class="input" placeholder="Provide a STEEM ID" v-model="user.main" />
-          </div>
-          <div class="control">
-            <a class="button is-info" data-method="main" @click="searchId">
-              <i aria-hidden="true" class="fas fa-search fa-fw"></i> {{Lang.profile.search}}
-            </a>
+    <div class="tabs is-centered">
+      <ul>
+        <li>
+          <a @click="SetPage('chain')">{{Lang.steem.chain}}</a>
+        </li>
+        <li>
+          <a @click="SetPage('steem')">STEEM</a>
+        </li>
+        <li>
+          <a @click="SetPage('hive')">Hive</a>
+        </li>
+      </ul>
+    </div>
+    <div v-if="Page==='chain'">
+      <!-- Nodes -->
+      <chains :steem="steem"></chains>
+    </div>
+    <div v-else-if="Page==='steem'">
+      <div class="columns">
+        <div class="column is-half">
+          <div class="field has-addons">
+            <div class="control is-expanded">
+              <input class="input" placeholder="Provide a STEEM ID" v-model="user.main" />
+            </div>
+            <div class="control">
+              <a class="button is-info" data-method="main" @click="searchId">
+                <i aria-hidden="true" class="fas fa-search fa-fw"></i> {{Lang.profile.search}}
+              </a>
+            </div>
           </div>
         </div>
       </div>
+      <div class="columns">
+        <div class="column is-one-third">
+          <prof-box :profile="profile.main" :show="show.mainProfile" :steem="steem" ref="profile"></prof-box>
+          <authorities :apps="profile.main.posting.account_auths" ref="authorized" v-if="profile.main"></authorities>
+          <follow :steem="steem"></follow>
+        </div>
+        <div class="column">
+          <token-list :tokens="tokens.main" v-if="user.main"></token-list>
+          <un-claimed :steem="steem" ref="unclaimed" v-if="user.main"></un-claimed>
+          <steem-monsters ref="steemmonsters"></steem-monsters>
+        </div>
+      </div>
     </div>
-    <div class="columns">
-      <div class="column is-one-third">
-        <prof-box :profile="profile.main" :show="show.mainProfile" :steem="steem" ref="profile"></prof-box>
-        <authorities :apps="profile.main.posting.account_auths" ref="authorized" v-if="profile.main"></authorities>
-        <follow :steem="steem"></follow>
-      </div>
-      <div class="column">
-        <token-list :tokens="tokens.main" v-if="user.main"></token-list>
-        <un-claimed :steem="steem" ref="unclaimed" v-if="user.main"></un-claimed>
-        <steem-monsters ref="steemmonsters"></steem-monsters>
-      </div>
+    <div v-else-if="Page==='hive'">
+      Underconstruction
     </div>
     <notify-msg :msg="msg"></notify-msg>
   </div>
@@ -46,6 +68,7 @@ module.exports={
     "follow": window.httpVueLoader("./js/components/Follow.vue"),
     "Language": window.httpVueLoader("./js/components/Language.vue"),
     "loading-box": window.httpVueLoader("./js/components/Loading.vue"),
+    "chains": window.httpVueLoader("./js/components/Chain.vue"),
     "notify-msg": window.httpVueLoader("./js/components/Notify.vue"),
     "prof-box": window.httpVueLoader("./js/components/Account.vue"),
     "steem-monsters": window.httpVueLoader("./js/components/SteemMonsters.vue"),
@@ -54,7 +77,11 @@ module.exports={
   },
   computed: {
     Expands() { return this.$store.state.expand; },
-    Lang: function() { return this.$store.state.lang; }
+    Lang: function() { return this.$store.state.lang; },
+    Page() { return this.$store.state.Page; }
+  },
+  created() {
+    this.Init();
   },
   data: function() {
     return {
@@ -94,7 +121,12 @@ module.exports={
         this.client.call(api, method [])
       });
     },*/
-    init: function() {
+    /* Initial loading the page */
+    Init() {
+      let page = localStorage.getItem("page");
+      this.SetPage(page);
+    },
+    InitSteem: function() {
       const that = this;
       that.GetLang();
       that.steem.api.setOptions({ url: "https://anyx.io" });
@@ -112,7 +144,7 @@ module.exports={
         that.searchSteemAccount(steemId, "main");
       }
     },
-    /* get initial language pack */
+    /* get Initial language pack */
     GetLang: function(lang = false) {
       if(!lang) {
         lang = localStorage.getItem("lang");
@@ -195,6 +227,17 @@ module.exports={
         that.tokens[method] = result;
       });
     },
+    /* set current viewed page */
+    SetPage: function(page = false) {
+      console.log(page)
+      if(!page) page = "chain";
+      localStorage.setItem("page", page);
+      this.$store.commit("updVar", { cat: "Page", value: page});
+    },
+    /* set steem api option */
+    SetSteemApiOption: function(url) {
+      this.steem.api.setOptions({ url: url });
+    },
     /* generic steem.api call without query parameter */
     SteemApiNoQry: function(api, callback) {
       const that = this;
@@ -245,7 +288,7 @@ module.exports={
     }
   },
   mounted: function() {
-    this.init();
+    this.InitSteem();
   }
 };
 </script>

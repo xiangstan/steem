@@ -13,15 +13,6 @@
     "steem_price": "STEEM价格",
     "voting_power": "投票力"
   },
-  "token": {
-    "balance": "余额",
-    "claim_all": "全部认领",
-    "sell": "出售",
-    "stake": "标桩",
-    "symbol": "符号",
-    "token_wallet": "代币钱包",
-    "unclaimed_tokens": "未认领的代币"
-  },
   "sms": {
     "alchemy_potion": "炼金术药水",
     "basic": "玩家基本信息",
@@ -41,11 +32,23 @@
   },
   "steem": {
     "authorized_app": "授权应用",
+    "chain": "链",
     "info_center": "信息中心",
     "ing": "中",
     "load": "加载",
+    "properties": "属性",
     "revoke_access": "取消授权",
+    "select": "选择",
     "space": "",
     "your": "你的"
+  },
+  "token": {
+    "balance": "余额",
+    "claim_all": "全部认领",
+    "sell": "出售",
+    "stake": "标桩",
+    "symbol": "符号",
+    "token_wallet": "代币钱包",
+    "unclaimed_tokens": "未认领的代币"
   }
 }
