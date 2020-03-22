@@ -34,6 +34,7 @@
     "authorized_app": "Authorized Apps",
     "chain": "Chain",
     "check": "Check",
+    "hive": "hive",
     "info_center": " Infor Center",
     "ing": "ing",
     "load": "Load",
@@ -41,6 +42,8 @@
     "revoke_access": "Revoke access from ",
     "select": "Select",
     "space": " ",
+    "splinterlands": "Splinterlands",
+    "steem": "steem",
     "your": "Your "
   },
   "token": {

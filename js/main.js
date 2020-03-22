@@ -2,7 +2,23 @@ Vue.config.devtools=true;
 
 const store = new Vuex.Store({
   state: {
-    curMHisPrice: false,
+    Chain: {
+      hive: {
+        curMHisPrice: false,
+        GlobalProps: false,
+        RewardFund: false
+      },
+      splinterlands: {
+        curMHisPrice: false,
+        GlobalProps: false,
+        RewardFund: false
+      },
+      steem: {
+        curMHisPrice: false,
+        GlobalProps: false,
+        RewardFund: false
+      },
+    },
     expand: {
       sms: false,
     },
@@ -16,8 +32,8 @@ const store = new Vuex.Store({
       tokens: {}
     },
     Page: false,
-    rewardFund: false,
-    steemGlobalProps: false,
+    Profile: {},
+    SteemId: "",
     msg: {
       alert: false,
       code: false,
@@ -39,10 +55,6 @@ const store = new Vuex.Store({
     updFollowList(state, value) {
       state.followList = value;
     },
-    /* update steem dynamic global properties */
-    updateGlobal(state, value) {
-      state.steemGlobalProps = value || false;
-    },
     /* update steem current median history price */
     updateHisPrice(state, value) {
       state.curMHisPrice = value;
@@ -53,9 +65,12 @@ const store = new Vuex.Store({
     updateMainSteemId(state, value) {
       state.main.steemId = value;
     },
-    /* update steem reward fund */
-    updateRewardFund(state, value) {
-      state.rewardFund = value;
+    updChainProp(state, data) {
+      state.Chain[data.chain][data.obj] = data.value;
+    },
+    /* update profile steemId */
+    updSteemId(state, value) {
+      state.SteemId = value;
     },
     updVar(state, data) {
       state[data.cat] = data.value;

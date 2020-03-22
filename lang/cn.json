@@ -34,6 +34,7 @@
     "authorized_app": "授权应用",
     "chain": "链",
     "check": "检查",
+    "hive": "hive",
     "info_center": "信息中心",
     "ing": "中",
     "load": "加载",
@@ -41,6 +42,8 @@
     "revoke_access": "取消授权",
     "select": "选择",
     "space": "",
+    "splinterlands": "Splinterlands",
+    "steem": "steem",
     "your": "你的"
   },
   "token": {
