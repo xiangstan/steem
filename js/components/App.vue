@@ -3,20 +3,23 @@
   <div class="container">
     <div class="is-relative">
       <h1 class="has-text-centered is-size-3">
-        STEEM{{Lang.steem.info_center}}
+        {{Lang.steem[Page].toUpperCase() + Lang.steem.info_center}}
       </h1>
       <Language></Language>
     </div>
     <div class="tabs is-centered">
       <ul>
-        <li>
+        <li :class="Page==='chain'?'is-active':''">
           <a @click="SetPage('chain')">{{Lang.steem.chain}}</a>
         </li>
-        <li>
+        <li :class="Page==='steem'?'is-active':''">
           <a @click="SetPage('steem')">STEEM</a>
         </li>
-        <li>
+        <li :class="Page==='hive'?'is-active':''">
           <a @click="SetPage('hive')">Hive</a>
+        </li>
+        <li :class="Page==='splinterlands'?'is-active':''">
+          <a @click="SetPage('splinterlands')">Splinterlands</a>
         </li>
       </ul>
     </div>
@@ -25,35 +28,16 @@
       <chains :steem="steem"></chains>
     </div>
     <div v-else-if="Page==='steem'">
-      <div class="columns">
-        <div class="column is-half">
-          <div class="field has-addons">
-            <div class="control is-expanded">
-              <input class="input" placeholder="Provide a STEEM ID" v-model="user.main" />
-            </div>
-            <div class="control">
-              <a class="button is-info" data-method="main" @click="searchId">
-                <i aria-hidden="true" class="fas fa-search fa-fw"></i> {{Lang.profile.search}}
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="columns">
-        <div class="column is-one-third">
-          <prof-box :profile="profile.main" :show="show.mainProfile" :steem="steem" ref="profile"></prof-box>
-          <authorities :apps="profile.main.posting.account_auths" ref="authorized" v-if="profile.main"></authorities>
-          <follow :steem="steem"></follow>
-        </div>
-        <div class="column">
-          <token-list :tokens="tokens.main" v-if="user.main"></token-list>
-          <un-claimed :steem="steem" ref="unclaimed" v-if="user.main"></un-claimed>
-          <steem-monsters ref="steemmonsters"></steem-monsters>
-        </div>
+      <steem-main :show="show" :steem="steem" :page="Page"></steem-main>
+      <div class="column">
+        <steem-monsters ref="steemmonsters"></steem-monsters>
       </div>
     </div>
     <div v-else-if="Page==='hive'">
-      Underconstruction
+      <hive-main :show="show" :steem="steem" :page="Page"></hive-main>
+    </div>
+    <div v-else-if="Page==='splinterlands'">
+      <splinterlands :show="show" :steem="steem" :page="Page"></splinterlands>
     </div>
     <notify-msg :msg="msg"></notify-msg>
   </div>
@@ -64,35 +48,32 @@
 <script>
 module.exports={
   components:{
-    "authorities": window.httpVueLoader("./js/components/Authorities.vue"),
-    "follow": window.httpVueLoader("./js/components/Follow.vue"),
+    "hive-main": window.httpVueLoader("./js/components/HiveMain.vue"),
     "Language": window.httpVueLoader("./js/components/Language.vue"),
     "loading-box": window.httpVueLoader("./js/components/Loading.vue"),
     "chains": window.httpVueLoader("./js/components/Chain.vue"),
     "notify-msg": window.httpVueLoader("./js/components/Notify.vue"),
-    "prof-box": window.httpVueLoader("./js/components/Account.vue"),
-    "steem-monsters": window.httpVueLoader("./js/components/SteemMonsters.vue"),
-    "token-list": window.httpVueLoader("./js/components/Tokens.vue"),
-    "un-claimed": window.httpVueLoader("./js/components/Unclaimed.vue")
+    "prof-box": window.httpVueLoader("./js/components/Profile.vue"),
+    "searchid": window.httpVueLoader("./js/components/SearchId.vue"),
+    "splinterlands": window.httpVueLoader("./js/components/Splinterlands.vue"),
+    "steem-main": window.httpVueLoader("./js/components/SteemMain.vue")
   },
   computed: {
     Expands() { return this.$store.state.expand; },
     Lang: function() { return this.$store.state.lang; },
-    Page() { return this.$store.state.Page; }
-  },
-  created() {
-    this.Init();
+    Page() { return this.$store.state.Page; },
+    Profile() { return this.$store.state.Profile; },
+    SteemId() { return this.$store.state.SteemId; }
   },
   data: function() {
     return {
-      client:new dsteem.Client("https://anyx.io"),
       msg: {},
       profile: {
         main: false,
         guest: false
       },
       show: {
-        mainProfile: false
+        Profile: false
       },
       ssc: new SSC("https://api.steem-engine.com/rpc/"),
       steem: steem,
@@ -116,32 +97,38 @@ module.exports={
         };
       }, 4000)
     },
-    /*ApiCall: function(api, method) {
-      return new Promise((resolve, reject) =>{
-        this.client.call(api, method [])
-      });
-    },*/
     /* Initial loading the page */
     Init() {
+      const steemId = localStorage.getItem("steemId");
       let page = localStorage.getItem("page");
+      this.GetLang();
       this.SetPage(page);
+      if (steemId) {
+        this.$store.commit("updSteemId", steemId);
+        this.InitSteem();
+      }
     },
     InitSteem: function() {
-      const that = this;
-      that.GetLang();
-      that.steem.api.setOptions({ url: "https://anyx.io" });
-      that.SteemGlobalProperties();
-      window.setInterval(function() { that.SteemGlobalProperties(); }, 120000);
-      window.setTimeout(function() {
-        that.SteemCurMedHisPrice();
-        that.SteemGetRewardFund();
-      }, 100);
-      const steemId = localStorage.getItem("steemId");
-      if(steemId){
-        that.user.main = steemId;
-        that.$store.commit("updateMainSteemId", steemId);
-        that.$store.commit("setLoading", true);
-        that.searchSteemAccount(steemId, "main");
+      if (this.Page === "steem") {
+        const that = this;
+        //that.steem.api.setOptions({ url: "https://anyx.io" });
+        that.ChainGlobalProperties();
+        window.setInterval(function() { that.ChainGlobalProperties(); }, 120000);
+        window.setTimeout(function() {
+          that.SteemCurMedHisPrice();
+          that.SteemGetRewardFund();
+        }, 100);
+        const steemId = localStorage.getItem("steemId");
+        if(steemId){
+          that.user.main = steemId;
+          that.$store.commit("updateMainSteemId", steemId);
+          //that.$store.commit("setLoading", true);
+          if (this.Page === "steem") {
+            that.searchAccount(steemId);
+          }
+        }
+      }
+      else {
       }
     },
     /* get Initial language pack */
@@ -158,8 +145,15 @@ module.exports={
           this.$store.commit("setLang", result.data);
         })
         .catch((error) => {
-          console.err(error);
+          console.error(error);
         });
+    },
+    /* get current page */
+    GetPage() {
+      if (this.SteemId) {
+        that.$store.commit("setLoading", true);
+        that.searchAccount(steemId);
+      }
     },
     searchId: function(e) {
       const method = e.currentTarget.dataset.method;
@@ -171,8 +165,8 @@ module.exports={
       this.$store.commit("updMainUnclaimed", false);
       this.$store.commit("updFollowList", []);
       this.$store.commit("setLoading", true);
-      this.$refs.unclaimed.tkns = [];
-      this.searchSteemAccount(steemId, method);
+      //this.$refs.unclaimed.tkns = [];
+      this.searchAccount(steemId, method);
     },
     /* Steem Engine Query */
     SscQuery: function(contract, table, query, limit=1000, offset=0) {
@@ -191,8 +185,9 @@ module.exports={
       });
     },
     /* search for a steem profile */
-    searchSteemAccount: function(steemId, method) {
+    searchAccount: function(steemId) {
       const that = this;
+      that.SmsDetail = false;
       if(steemId === "") {
         that.msg = {
           alert: true,
@@ -201,12 +196,16 @@ module.exports={
         }
       }
       else {
+        if (typeof that.$refs.unclaimed !== "undefined" && typeof that.$refs.unclaimed.tkns !== "undefined") {
+          //that.$refs.unclaimed.tkns = [];
+        }
         that.steem.api.getAccounts([steemId], function(err, result) {
           if(err===null){
             localStorage.setItem("steemId", steemId);
-            that.$store.commit("updateMainSteemId", steemId);
-            that.profile[method] = result[0];
-            that.show[method+"Profile"] = true;
+            that.$store.commit("updSteemId", steemId);
+            that.profile = result[0];
+            that.$store.commit("updVar", {cat: "Profile", value: result[0]});
+            that.show.Profile = true;
           }
           else{
             that.msg = {
@@ -216,7 +215,7 @@ module.exports={
             }
           }
         });
-        that.searchToken(steemId, "main");
+        //that.searchToken(steemId);
       }
       that.$store.commit("setLoading", false);
     },
@@ -230,14 +229,22 @@ module.exports={
     /* set current viewed page */
     SetPage: function(page = false) {
       if(!page) page = "chain";
-      if(page !== "chain") { this.SetSteemApiOption(page); }
       localStorage.setItem("page", page);
       this.$store.commit("updVar", { cat: "Page", value: page});
+      if(page !== "chain") {
+        this.SetSteemApiOption(page);
+        if (this.SteemId !== "") {
+          this.searchAccount(this.SteemId);
+          this.InitSteem();
+        }
+      }
     },
     /* set steem api option */
     SetSteemApiOption: function(chain) {
       const opt = {
+        chain: "https://api.steemit.com",
         hive: "https://anyx.io",
+        splinterlands: "https://api.steemit.com",
         steem: "https://api.steemit.com"
       };
       if (chain !== "") {
@@ -258,8 +265,10 @@ module.exports={
     SteemCurMedHisPrice: function() {
       const that = this;
       that.SteemApiNoQry("getCurrentMedianHistoryPrice", function(err, result) {
-        if (err) {  console.err(err); }
-        that.$store.commit("updateHisPrice", result);
+        if (err) { console.error(err); }
+        else {
+          that.$store.commit("updChainProp", {chain: that.Page, obj: "curMHisPrice", value: result});
+        }
       });
     },
     /* get reward fund */
@@ -267,14 +276,16 @@ module.exports={
       const that = this;
       that.SteemApiQry("getRewardFund", "post", function(err, result){
         if (err) { console.error(err); }
-        that.$store.commit("updateRewardFund", result);
+        else {
+          that.$store.commit("updChainProp", {chain: that.Page, obj: "RewardFund", value: result});
+        }
       });
     },
-    SteemGlobalProperties: function(){
+    ChainGlobalProperties: function(){
       const that = this;
-      that.steem.api.getDynamicGlobalProperties(function(err,result) {
+      that.steem.api.getDynamicGlobalProperties(function(err, result) {
         if(err === null) {
-          that.$store.commit("updateGlobal", result);
+          that.$store.commit("updChainProp", {chain: that.Page, obj: "GlobalProps", value: result});
         }
       });
     },
@@ -294,7 +305,7 @@ module.exports={
     }
   },
   mounted: function() {
-    this.InitSteem();
+    this.Init();
   }
 };
 </script>

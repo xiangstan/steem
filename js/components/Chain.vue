@@ -93,19 +93,27 @@ module.exports = {
       that.$store.commit("setLoading", true);
       that.ChainUrlCss = "";
       that.load.ChainUrl = false;
-      that.steem.api.setOptions({ url: this.ChainUrl });
-      that.$parent.SteemApiNoQry("getChainProperties", function(err, result) {
+      if(that.ChainUrl.trim() === "") {
+        that.ChainUrlCss = "is-danger";
+        that.ChainUrlTxt = that.Lang.steem.url_cannot_empty;
         that.load.ChainUrl = true;
-        if (result) {
-          let str = result.account_creation_fee.split(" ");
-          that.ChainUrlTxt = str[1];
-        }
-        else {
-          that.ChainUrlCss = "is-danger";
-          that.ChainUrlTxt = err;
-        }
         that.$store.commit("setLoading", false);
-      });
+      }
+      else {
+        that.steem.api.setOptions({ url: this.ChainUrl });
+        that.$parent.SteemApiNoQry("getChainProperties", function(err, result) {
+          that.load.ChainUrl = true;
+          if (result) {
+            let str = result.account_creation_fee.split(" ");
+            that.ChainUrlTxt = str[1];
+          }
+          else {
+            that.ChainUrlCss = "is-danger";
+            that.ChainUrlTxt = err;
+          }
+          that.$store.commit("setLoading", false);
+        });
+      }
     },
     GetChainProperties: function() {
       const that = this;
