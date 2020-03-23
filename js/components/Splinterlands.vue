@@ -85,7 +85,7 @@
                 <h3 class="has-text-weight-bold is-size-5 is-marg-bt-5">{{Lang.sms.collection}}</h3>
                 <div v-for="card in MyCards">
                   <div class="sms-card beta" role="button">
-                    <img :src="Url.card + encodeURI(card.name) + '.png'" class="card-img" />
+                    <img :src="Url[GetEditionUrl(card.editions)] + encodeURI(card.name) + '.png'" class="card-img" />
                   </div>
                 </div>
               </div>
@@ -131,7 +131,8 @@ module.exports={
       SmsDetail: false,
       Url: {
         api: "https://api.steemmonsters.io/",
-        card: "https://d36mxiodymuqjm.cloudfront.net/cards_beta/",
+        cardBeta: "https://d36mxiodymuqjm.cloudfront.net/cards_beta/",
+        cardUntamed: "https://steemmonsters.s3.amazonaws.com/cards_untamed/",
         json: "https://steemmonsters.com/",
         leagueIcon: "https://d36mxiodymuqjm.cloudfront.net/website/icons/leagues/"
       }
@@ -149,6 +150,13 @@ module.exports={
       if(this.ExpandStat && this.SteemId !== false){
         this.LoadCards();
       }
+    },
+    // get card edition Url
+    GetEditionUrl(edition) {
+      const opt = {
+        "4": "cardUntamed"
+      };
+      return opt[edition] || "cardBeta";
     },
     // get league rating from SmsDetail.season_details.rating
     GetLeague(rating) {
