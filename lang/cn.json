@@ -32,6 +32,7 @@
   },
   "steem": {
     "authorized_app": "授权应用",
+    "blog": "博客",
     "chain": "链",
     "check": "检查",
     "hive": "hive",

@@ -12,8 +12,9 @@
         <follow :steem="steem"></follow>
       </div>
       <div class="column">
-        <!-- <token-list :tokens="tokens.main" v-if="user.main"></token-list> -->
-        <!-- <un-claimed :steem="steem" ref="unclaimed" v-if="user.main"></un-claimed> -->
+        <token-list></token-list>
+        <un-claimed :steem="steem" ref="unclaimed" v-if="SteemId"></un-claimed>
+        <blog-list></blogs-list>
       </div>
     </div>
   </div>
@@ -23,12 +24,13 @@
 module.exports={
   components:{
     "authorities": window.httpVueLoader("./js/components/Authorities.vue"),
+    "blog-list": window.httpVueLoader("./js/components/BlogList.vue"),
     "follow": window.httpVueLoader("./js/components/Follow.vue"),
     "prof-box": window.httpVueLoader("./js/components/Profile.vue"),
     "searchid": window.httpVueLoader("./js/components/SearchId.vue"),
     "token-list": window.httpVueLoader("./js/components/Tokens.vue"),
     "un-claimed": window.httpVueLoader("./js/components/Unclaimed.vue")
-},
+  },
   computed: {
     Lang() { return this.$store.state.lang; },
     Profile() { return this.$store.state.Profile; },

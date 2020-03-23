@@ -17,7 +17,7 @@
         </div>
       </div>
     </div>
-    <div class="list-item" v-if="tkns.length>0">
+    <div class="list-item" v-if="TokenExpand && tkns.length>0">
       <div class="field has-addons">
         <div class="control is-expanded">
           <input class="input" id="posting-key" type="password" placeholder="Posting Key">
@@ -39,7 +39,7 @@ module.exports={
     Lang: function() { return this.$store.state.lang; },
     SteemId: function() { return this.$store.state.main.steemId; },
     TokenExpandSign: function() { return (this.TokenExpand) ? "-" : "+"; },
-    TokenExpand: function() { return this.$store.state.main.tokenExpand; }
+    TokenExpand: function() { return this.$store.state.expand.unclaimed; }
   },
   data: function() {
     return {
@@ -51,7 +51,7 @@ module.exports={
     fetchUnclaimed: function(e) {
       e.preventDefault();
       const that = this;
-      that.$store.commit("updMainUnclaimed", !that.TokenExpand);
+      that.$store.commit("updExpand", {cat: "unclaimed", value: !that.TokenExpand });
       that.tkns = [];
       if(this.TokenExpand && that.SteemId !== false){
         that.$store.commit("setLoading", true);

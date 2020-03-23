@@ -2,6 +2,7 @@ Vue.config.devtools=true;
 
 const store = new Vuex.Store({
   state: {
+    Blogs: [],
     Chain: {
       hive: {
         curMHisPrice: false,
@@ -20,7 +21,9 @@ const store = new Vuex.Store({
       },
     },
     expand: {
+      blog: false,
       sms: false,
+      unclaimed: false,
     },
     followList: [],
     lang: false,
@@ -28,7 +31,6 @@ const store = new Vuex.Store({
     main: {
       steemId: false,
       profile: {},
-      tokenExpand: false,
       tokens: {}
     },
     Page: false,
@@ -59,9 +61,6 @@ const store = new Vuex.Store({
     updateHisPrice(state, value) {
       state.curMHisPrice = value;
     },
-    updMainUnclaimed(state, status) {
-      state.main.tokenExpand = status;
-    },
     updateMainSteemId(state, value) {
       state.main.steemId = value;
     },
@@ -86,7 +85,7 @@ const App = new window.Vue({
   components:{
     "App": window.httpVueLoader("./js/components/App.vue"),
   },
-  template:"<App></App>"
+  template:"<App ref='app'></App>"
 });
 
 if(typeof window.__VUE_DEVTOOLS_GLOBAL_HOOK__!=="undefined"){

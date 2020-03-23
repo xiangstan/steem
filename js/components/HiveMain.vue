@@ -9,6 +9,9 @@
       <div class="column is-one-third">
         <prof-box :page="page" :show="show.Profile" :steem="steem" ref="hiveprofile"></prof-box>
       </div>
+      <div class="column">
+        <blog-list></blogs-list>
+      </div>
     </div>
   </div>
 </template>
@@ -16,6 +19,7 @@
 <script>
 module.exports={
   components:{
+    "blog-list": window.httpVueLoader("./js/components/BlogList.vue"),
     "prof-box": window.httpVueLoader("./js/components/Profile.vue"),
     "searchid": window.httpVueLoader("./js/components/SearchId.vue"),
   },

@@ -31,7 +31,6 @@ module.exports={
       for(let obj in this.Expands) {
         this.$store.commit("updExpand", {});
       }
-      this.$store.commit("updMainUnclaimed", false);
       this.$store.commit("updFollowList", []);
       this.$store.commit("setLoading", true);
       this.$parent.searchAccount(steemId);

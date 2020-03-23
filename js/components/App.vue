@@ -28,10 +28,7 @@
       <chains :steem="steem"></chains>
     </div>
     <div v-else-if="Page==='steem'">
-      <steem-main :show="show" :steem="steem" :page="Page"></steem-main>
-      <div class="column">
-        <steem-monsters ref="steemmonsters"></steem-monsters>
-      </div>
+      <steem-main :show="show" :steem="steem" :page="Page" ref="steempage"></steem-main>
     </div>
     <div v-else-if="Page==='hive'">
       <hive-main :show="show" :steem="steem" :page="Page"></hive-main>
@@ -67,6 +64,7 @@ module.exports={
   },
   data: function() {
     return {
+      client: false,
       msg: {},
       profile: {
         main: false,
@@ -162,7 +160,7 @@ module.exports={
       for(let obj in this.Expands) {
         this.$store.commit("updExpand", {});
       }
-      this.$store.commit("updMainUnclaimed", false);
+      that.$store.commit("updExpand", {cat: "unclaimed", value: false });
       this.$store.commit("updFollowList", []);
       this.$store.commit("setLoading", true);
       //this.$refs.unclaimed.tkns = [];
@@ -196,9 +194,15 @@ module.exports={
         }
       }
       else {
-        if (typeof that.$refs.unclaimed !== "undefined" && typeof that.$refs.unclaimed.tkns !== "undefined") {
-          //that.$refs.unclaimed.tkns = [];
+        let chainPage = that.$refs.steempage;
+        let unClaimed = false;
+        if (typeof chainPage !== "undefined") {
+          unClaimed = chainPage.$refs.unclaimed;
         }
+        if (unClaimed) {
+          unClaimed.tkns = [];
+        }
+        that.$store.commit("updExpand", {cat: "unclaimed", value: false });
         that.steem.api.getAccounts([steemId], function(err, result) {
           if(err===null){
             localStorage.setItem("steemId", steemId);
@@ -233,10 +237,20 @@ module.exports={
       this.$store.commit("updVar", { cat: "Page", value: page});
       if(page !== "chain") {
         this.SetSteemApiOption(page);
+        this.SetSteemClient(page);
         if (this.SteemId !== "") {
           this.searchAccount(this.SteemId);
           this.InitSteem();
         }
+      }
+    },
+    SetSteemClient(chain) {
+      const opt = {
+        steem: "https://api.steemit.com",
+        hive: "https://anyx.io",
+      };
+      if (typeof opt[chain] !== "undefined") {
+        this.client = new dsteem.Client(opt[chain]);
       }
     },
     /* set steem api option */
@@ -262,7 +276,7 @@ module.exports={
       that.steem.api[api](query, function(err, result) { callback(err, result); });
     },
     /* current median history price */
-    SteemCurMedHisPrice: function() {
+    SteemCurMedHisPrice() {
       const that = this;
       that.SteemApiNoQry("getCurrentMedianHistoryPrice", function(err, result) {
         if (err) { console.error(err); }
@@ -272,7 +286,7 @@ module.exports={
       });
     },
     /* get reward fund */
-    SteemGetRewardFund: function() {
+    SteemGetRewardFund() {
       const that = this;
       that.SteemApiQry("getRewardFund", "post", function(err, result){
         if (err) { console.error(err); }
