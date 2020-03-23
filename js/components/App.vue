@@ -219,16 +219,8 @@ module.exports={
             }
           }
         });
-        //that.searchToken(steemId);
       }
       that.$store.commit("setLoading", false);
-    },
-    /* search tokens */
-    searchToken: function(steemId, method) {
-      const that = this;
-      that.SscQuery("tokens", "balances", { account: steemId }).then((result) => {
-        that.tokens[method] = result;
-      });
     },
     /* set current viewed page */
     SetPage: function(page = false) {

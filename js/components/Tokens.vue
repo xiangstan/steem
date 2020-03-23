@@ -14,7 +14,7 @@
         </div>
       </div>
     </div>
-    <div class="item-list" v-if="tokens.length>0&&!tokenExpand">
+    <div class="item-list" v-if="!TokenExpand">
       <p class="notification is-warning">
         <span v-if="Lang.index==='en'">
           Click [ + ] to View All Tokens and Sell Button
@@ -24,7 +24,7 @@
         </span>
       </p>
     </div>
-    <template v-if="tokenExpand">
+    <template v-if="TokenExpand">
         <div class="list-item has-background-info has-text-light">
           <div class="columns has-text-weight-bold is-uppercase">
             <div class="column is-one-quarter">
@@ -71,38 +71,39 @@
 <script>
 module.exports={
   computed: {
-    AllTokens: function() {
-      let temp = [];
-      for(let i = 0; i < this.tokens.length; i++){
-        let content=this.tokens[i];
-        if((content.balance > 0 || content.stake > 0) && content.symbol != 'STEEMP') {
-          temp.push(content);
+    AllTokens() {
+      if (this.Tokens) {
+        let temp = [];
+        for(let i = 0; i < this.Tokens.length; i++) {
+          let content = this.Tokens[i];
+          if((content.balance > 0 || content.stake > 0) && content.symbol != 'STEEMP') {
+            temp.push(content);
+          }
         }
+        return temp.sort((a, b) => (a.symbol > b.symbol) ? 1 : -1);
       }
-      return temp.sort((a, b) => (a.symbol > b.symbol) ? 1 : -1);
+      else {
+        return [];
+      }
     },
     Lang: function() { return this.$store.state.lang; },
-    SteemId: function() { return this.$store.state.main.steemId; },
-    TokenExpandSign: function() { return (this.tokenExpand) ? "-" : "+"; },
-    TokenExpandCount: function() {
-      let count = 6;
-      if(this.AllTokens.length < 6 || this.tokenExpand){ count = this.AllTokens.length; }
-      return count;
-    }
+    SteemId: function() { return this.$store.state.SteemId; },
+    TokenExpand: function() { return this.$store.state.expand.token; },
+    TokenExpandSign: function() { return (this.TokenExpand) ? "-" : "+"; },
+    Tokens() { return this.$store.state.Tokens; }
   },
   data: function() {
     return {
       form: [],
-      select: false,
-      tokenExpand: false
+      select: false
     }
   },
   methods: {
     /* expand toke list */
     Expand: function() {
-      this.tokenExpand = !this.tokenExpand;
-      if(this.tokenExpand) {
-        console.log("Expanded");
+      this.$store.commit("updExpand", {cat: "token", value: !this.TokenExpand});
+      if (this.TokenExpand) {
+        this.searchToken(this.SteemId);
       }
     },
     /* get highest bid price */
@@ -112,7 +113,7 @@ module.exports={
     /* get token bid price */
     GetPrice: function(data, i, key, sell = false) {
       const that = this;
-      that.$parent.SscQuery("market", "metrics", { symbol: data.symbol }).then((result) => {
+      that.$root.$refs.app.SscQuery("market", "metrics", { symbol: data.symbol }).then((result) => {
         //console.log(result[0].highestBid);
         let price = result[0].highestBid;
         if (sell) {
@@ -144,14 +145,14 @@ module.exports={
       const activekey = document.getElementById("active-key").value;
       const temp = that.form.slice(0);
       if(activekey.length === 0) {
-        that.$parent.alert({
+        that.$root.$refs.app.alert({
           alert: true,
           code: false,
           text: "Need to provide STEEM Active Key"
         });
       }
       else if(temp.length === 0){
-        that.$parent.alert({
+        that.$root.$refs.app.alert({
           alert: true,
           code: false,
           text: "Need to select at least one token"
@@ -168,6 +169,14 @@ module.exports={
         }
         that.form = [];
       }
+    },
+    /* search tokens */
+    searchToken: function(steemId) {
+      const that = this;
+      that.$root.$refs.app.SscQuery("tokens", "balances", { account: steemId }).then((result) => {
+        that.tokens = result;
+        that.$store.commit("updVar", {cat: "Tokens", value: result });
+      });
     },
     /* set balance to zero */
     setBalance: function(symbol) {
@@ -200,19 +209,16 @@ module.exports={
         if(balance > 0 && price > 0) {
           steem.broadcast.customJson(key, [that.SteemId], [], 'ssc-mainnet1', json, (err, result) => {
             if (err !== null){
-              that.$parent.toast("You have failed to sell <span class='token-symbol'>" + symbol + "</span>");
+              that.$root.$refs.app.toast("You have failed to sell <span class='token-symbol'>" + symbol + "</span>");
             }
             else {
-              that.$parent.toast("You have successfully sold "+ balance + " <span class='token-symbol'>" + symbol + "</span> at " + price + " steem");
+              that.$root.$refs.app.toast("You have successfully sold "+ balance + " <span class='token-symbol'>" + symbol + "</span> at " + price + " steem");
               that.setBalance(symbol);
             }
           });
         }
       }, (+i + +1) * 1000);
     }
-  },
-  props: {
-    tokens: {type: Array, default: false},
   }
 };
 </script>

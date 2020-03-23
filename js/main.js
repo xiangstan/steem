@@ -23,24 +23,24 @@ const store = new Vuex.Store({
     expand: {
       blog: false,
       sms: false,
+      token: false,
       unclaimed: false,
     },
     followList: [],
     lang: false,
     loading: false,
     main: {
-      steemId: false,
-      profile: {},
       tokens: {}
     },
-    Page: false,
-    Profile: {},
-    SteemId: "",
     msg: {
       alert: false,
       code: false,
       text: ""
-    }
+    },
+    Page: false,
+    Profile: {},
+    SteemId: "",
+    Tokens: []
   },
   mutations: {
     /* load language pack to vuex */
