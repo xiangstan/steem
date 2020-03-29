@@ -1,17 +1,32 @@
 {
   "index": "cn",
+  "errmsg": {
+    "empty_post": "撰写文章的所有表格栏位都不能为空",
+    "no_keychain": "您没有安装Keychain。"
+  },
   "follow": {
     "follower": "粉丝",
     "following": "关注",
     "nothing_to": "尚无数据可"
   },
+  "post": {
+    "content": "内容",
+    "decline": "拒绝收益",
+    "post": "发布",
+    "reward": "奖励",
+    "tag": "标签",
+    "title": "题目"
+  },
   "profile": {
+    "downvote": "踩",
+    "power": "能量",
+    "proxy": "代理",
     "savings": "储蓄",
     "search": "搜索",
     "steem": "STEEM",
     "steem_power": "代币影响力",
     "steem_price": "STEEM价格",
-    "voting_power": "投票力"
+    "voting": "投票"
   },
   "sms": {
     "alchemy_potion": "炼金术药水",
@@ -31,6 +46,7 @@
     "total": "总体"
   },
   "steem": {
+    "account": "账户",
     "authorized_app": "授权应用",
     "blog": "博客",
     "chain": "链",
@@ -39,13 +55,19 @@
     "info_center": "信息中心",
     "ing": "中",
     "load": "加载",
+    "login": "登陆",
+    "joined": "加入日期",
+    "node": "结点",
+    "ping": "测速",
     "properties": "属性",
     "revoke_access": "取消授权",
     "select": "选择",
     "space": "",
     "splinterlands": "Splinterlands",
-    "steem": "steem",
+    "status": "状态",
+    "steem": "STEEM",
     "url_cannot_empty": "URL不能为空",
+    "wallet": "钱包",
     "your": "你的"
   },
   "token": {

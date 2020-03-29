@@ -64,11 +64,22 @@
         </p>
       </div>
     </div>
+    <div class="columns">
+      <div class="column">
+        <status chain="steem"></status>
+      </div>
+      <div class="column">
+        <status chain="hive"></status>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 module.exports = {
+  components: {
+    "status": window.httpVueLoader("./js/components/Status.vue")
+  },
   computed: {
     Lang: function() { return this.$store.state.lang; },
   },

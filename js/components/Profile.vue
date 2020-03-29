@@ -73,7 +73,10 @@
               </template>
             </p>
             <p>
-              <strong>{{Lang.profile.voting_power}}:</strong> {{ChainVotePower}}%
+              <strong>{{Lang.profile.voting + Lang.steem.space +Lang.profile.power}}:</strong> {{ChainVotePower}}%
+            </p>
+            <p>
+              <strong>{{Lang.profile.downvote + Lang.steem.space +Lang.profile.power}}:</strong> {{ChainDownPower}}%
             </p>
             <!-- <p>
               <strong>Upvote:</strong> ${{upvote}}
@@ -131,6 +134,12 @@ module.exports={
         };
       }
       else{ return false; }
+    },
+    // user down vote power
+    ChainDownPower() {
+      const sec = (new Date - new Date(this.Profile.downvote_manabar.last_update_time * 1000)) / 1000;
+      const mana = this.Profile.downvote_manabar.current_mana / (this.Profile.voting_manabar.current_mana / (this.Profile.voting_power / 100) / 4);
+      return Math.min((mana * 100 + (10000 * sec / 432000)) / 100, 100).toFixed(2);
     },
     /* user voting power */
     ChainVotePower() {

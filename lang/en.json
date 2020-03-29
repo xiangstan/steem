@@ -1,17 +1,32 @@
 {
   "index": "en",
+  "errmsg": {
+    "empty_post": "None of the post fields can be empty",
+    "no_keychain": "You do not have Keychain installed"
+  },
   "follow": {
-    "follower": "Follower",
+    "follower": "Follower(s)",
     "following": "Following",
     "nothing_to": "Nothing to "
   },
+  "post": {
+    "content": "Content",
+    "decline": "Decline Payout",
+    "post": "Post",
+    "reward": "Reward",
+    "tag": "Tags",
+    "title": "Title"
+  },
   "profile": {
+    "downvote": "Downvote",
+    "power": "Power",
+    "proxy": "Proxy",
     "savings": "Savings",
     "search": "Search",
     "steem": "STEEM",
     "steem_power": "STEEM Power",
     "steem_price": "STEEM Price",
-    "voting_power": "Voting Power"
+    "voting": "Voting"
   },
   "sms": {
     "alchemy_potion": "Alchemy Potion",
@@ -31,6 +46,7 @@
     "total": "Total"
   },
   "steem": {
+    "account": "Account",
     "authorized_app": "Authorized Apps",
     "blog": "Blog",
     "chain": "Chain",
@@ -38,14 +54,20 @@
     "hive": "hive",
     "info_center": " Infor Center",
     "ing": "ing",
+    "joined": "Joined",
     "load": "Load",
+    "login": "Log In",
+    "node": "Node",
+    "ping": "PING",
     "properties": "Properties",
     "revoke_access": "Revoke access from ",
     "select": "Select",
     "space": " ",
     "splinterlands": "Splinterlands",
-    "steem": "steem",
+    "status": "Status",
+    "steem": "STEEM",
     "url_cannot_empty": "URL Cannot be Empty",
+    "wallet": "Wallet",
     "your": "Your "
   },
   "token": {
